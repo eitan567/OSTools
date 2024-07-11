@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [        
+        // {
+        //     "name": "Python: Uvicorn",
+        //     "type": "debugpy",
+        //     "request": "launch",
+        //     "program": "${workspaceFolder}/backend/main.py",
+        //     "console": "integratedTerminal",
+        //     "args": [
+        //         "--reload"                
+        //     ],
+        //     "jinja": true,
+        //     "env": {
+        //         "PYTHONUNBUFFERED": "1"
+        //     }
+        // }
+    ]
+}

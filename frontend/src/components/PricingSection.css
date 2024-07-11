@@ -1,0 +1,98 @@
+.pricing {
+  /* padding: 0rem 1rem; */
+  text-align: center;
+  background-color: #f8f9fa;
+}
+
+.pricing h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.pricing > p {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  color: #6c757d;
+}
+
+.pricing-toggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.pricing-toggle span {
+  margin: 0 1rem;
+}
+
+.pricing-toggle span.active {
+  color: #4a6cf7;
+  font-weight: bold;
+}
+
+.pricing-plans {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+/* Switch styles */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 75px;
+  height: 16px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 13px;
+  width: 13px;
+  left: -1px;
+  bottom: -1px;
+  background-color: white;
+  border: 3px solid blue;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #4a6cf7;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+@media (max-width: 768px) {
+  .pricing-plans {
+    flex-direction: column;
+    align-items: center;
+  }
+}

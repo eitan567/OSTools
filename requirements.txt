@@ -1,0 +1,17 @@
+fastapi==0.100.0
+uvicorn==0.23.1
+python-multipart==0.0.6
+motor==3.2.0
+ollama==0.1.0
+Pillow==10.0.0
+python-dotenv==1.0.0
+httpx
+colorama==0.4.6
+pydantic==2.1.1
+httpx[http2]
+authlib
+starlette
+itsdangerous
+pyjwt
+cryptography
+bcrypt  # For password hashing

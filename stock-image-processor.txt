@@ -1,0 +1,21 @@
+project_root/
+├── frontend/
+│   ├── public/
+│   └── src/
+│       ├── components/
+│       │   ├── ImageTable.js
+│       │   ├── LandingPage.js
+│       │   ├── LandingPage.css
+│       │   ├── PricingPlan.js
+│       │   ├── StockImageProcessor.js
+│       │   └── ProcessButton.js
+│       ├── App.js
+│       └── index.js
+├── backend/
+│   ├── main.py
+│   ├── image_processor.py
+│   ├── images.py
+│   ├── util.py
+│   └── database.py
+├── requirements.txt
+└── README.md
