@@ -7,18 +7,20 @@ import './StockImageProcessor.css';
 
 function StockImageProcessor() {
   const [images, setImages] = useState([]);
-  const [isProcessing, setIsProcessing] = useState(false);
+  // const [isProcessing, setIsProcessing] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [csvDownloadEnabled, setCsvDownloadEnabled] = useState(false);
   const [processingImages, setProcessingImages] = useState({});
 
   const updateImageStatus = useCallback((data) => {
+    console.log("Received data for update:", data);
+  
     setImages(prevImages => prevImages.map(img => 
       img.filename === data.filename 
         ? { 
             ...img, 
-            ...data, 
+            ...data,
             title: data.title !== undefined ? data.title : img.title,
             keywords: data.keywords !== undefined ? data.keywords : img.keywords,
             category: data.category !== undefined ? data.category : img.category,
@@ -26,18 +28,23 @@ function StockImageProcessor() {
           } 
         : img
     ));
-
+    
+    console.log("Updated image:", data);
+  
     if (data.status === 'processed' || data.status === 'error') {
       setProcessingImages(prev => {
         const newProcessingImages = { ...prev };
-        delete newProcessingImages[data.filename];
+        if (newProcessingImages[data.filename]) {
+          delete newProcessingImages[data.filename];
+        }
+        console.log("New processing images state after update:", newProcessingImages);
         return newProcessingImages;
       });
     }
   }, []);
 
   const handleProcessImage = async (filename) => {
-    setProcessingImages(prev => ({ ...prev, [filename]: true }));
+    setProcessingImages(prev => ({ ...prev, [filename]: 'ALL' }));
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/process/${filename}`, {
         method: 'POST',
@@ -49,9 +56,14 @@ function StockImageProcessor() {
       setSnackbarMessage('Failed to process image');
       setSnackbarOpen(true);
     } finally {
-      setProcessingImages(prev => ({ ...prev, [filename]: false }));
+      setProcessingImages(prev => {
+        const newProcessingImages = { ...prev };
+        delete newProcessingImages[filename];
+        return newProcessingImages;
+      });
     }
   };
+  
 
   const setupSSE = useCallback(() => {
     const eventSource = new EventSource(`${process.env.REACT_APP_API_URL}/stream`);
@@ -63,6 +75,7 @@ function StockImageProcessor() {
           console.log('Received keep-alive');
           return;
         }
+        console.log("Received SSE data:", data);
         updateImageStatus(data);
       } catch (error) {
         console.error('Error parsing SSE data:', error, event.data);
@@ -138,15 +151,15 @@ function StockImageProcessor() {
       setSnackbarOpen(true);
       return;
     }
-
+  
     setProcessingImages(prev => {
       const newProcessingImages = { ...prev };
       filesToProcess.forEach(filename => {
-        newProcessingImages[filename] = true;
+        newProcessingImages[filename] = type === "ALL" ? "ALL" : type;
       });
       return newProcessingImages;
     });
-
+  
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/process`, {
         method: 'POST',
@@ -155,25 +168,16 @@ function StockImageProcessor() {
         },
         body: JSON.stringify({ file_names: filesToProcess, type: type }),
       });
-
+  
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
+  
       const result = await response.json();
       setSnackbarMessage(result.message);
     } catch (error) {
       console.error('Error processing images:', error);
       setSnackbarMessage(error.message || 'An error occurred while processing images');
-      
-      // Clear processing state for these images
-      setProcessingImages(prev => {
-        const newProcessingImages = { ...prev };
-        filesToProcess.forEach(filename => {
-          delete newProcessingImages[filename];
-        });
-        return newProcessingImages;
-      });
     }
     setSnackbarOpen(true);
   };
@@ -204,15 +208,16 @@ function StockImageProcessor() {
   };
 
   const handleRegenerateField = async (field, filename) => {
+    setProcessingImages(prev => ({ ...prev, [filename]: field.toUpperCase() }));
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/regenerate/${field}/${filename}`, {
         method: 'POST',
       });
-
+  
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
+  
       const result = await response.json();
       setSnackbarMessage(result.message);
       setSnackbarOpen(true);
@@ -221,8 +226,15 @@ function StockImageProcessor() {
       console.error(`Error regenerating ${field}:`, error);
       setSnackbarMessage(`Failed to regenerate ${field}`);
       setSnackbarOpen(true);
+    } finally {
+      setProcessingImages(prev => {
+        const newProcessingImages = { ...prev };
+        delete newProcessingImages[filename];
+        return newProcessingImages;
+      });
     }
   };
+  
 
   const handleSelectImage = (filename, isSelected) => {
     setImages(prevImages => prevImages.map(img => 
@@ -247,14 +259,14 @@ function StockImageProcessor() {
         <section className="pricing processorTable" style={{ backgroundColor: '#fff' }}>
           <Box display="flex" flexDirection="column" alignItems="center">
             <Paper style={{ width: '100%', maxWidth: '1400px', marginBottom: '1rem', overflow: 'auto', border: '1px solid #e6e5e5' }}>
-              <ImageTable 
-                images={images}
-                onRegenerateField={handleRegenerateField}
-                onSelectImage={handleSelectImage}
-                onSelectAll={handleSelectAll}
-                onProcessImage={handleProcessImage}
-                processingImages={processingImages}
-              />
+            <ImageTable 
+              images={images}
+              onRegenerateField={handleRegenerateField}
+              onSelectImage={handleSelectImage}
+              onSelectAll={handleSelectAll}
+              onProcessImage={handleProcessImage}
+              processingImages={processingImages}  // Add this line
+            />
             </Paper>
             <Box display="flex" gap={2} marginBottom="1rem" width="100%" maxWidth="1400px" justifyContent="space-between">
               <label className="sign-up label-button" style={{cursor: 'pointer', padding: '0.3rem 0.6rem', fontSize: '0.8rem'}}>
@@ -262,10 +274,10 @@ function StockImageProcessor() {
                 <input type="file" hidden multiple onChange={handleFileUpload} />
               </label>
               <button onClick={() => handleProcessImages("ALL")} 
-                disabled={isProcessing || images.filter(img => img.selected).length === 0}
+                disabled={Object.keys(processingImages).length > 0 || images.filter(img => img.selected).length === 0}
                 className="sign-up"
                 style={{
-                  backgroundColor: isProcessing ? '#ccc' : '#4a6cf7',
+                  backgroundColor: Object.keys(processingImages).length > 0 ? '#ccc' : '#4a6cf7',
                   padding: '0.3rem 0.6rem',
                   fontSize: '0.8rem'
                 }}
@@ -273,10 +285,10 @@ function StockImageProcessor() {
                 Process Images
               </button>
               <button onClick={() => handleProcessImages("TITLE")} 
-                disabled={isProcessing || images.filter(img => img.selected).length === 0}
+                disabled={Object.keys(processingImages).length > 0 || images.filter(img => img.selected).length === 0}
                 className="sign-up"
                 style={{
-                  backgroundColor: isProcessing ? '#ccc' : '#4a6cf7',
+                  backgroundColor: Object.keys(processingImages).length > 0 ? '#ccc' : '#4a6cf7',
                   padding: '0.3rem 0.6rem',
                   fontSize: '0.8rem'
                 }}
@@ -284,10 +296,10 @@ function StockImageProcessor() {
                 Process Titles
               </button>
               <button onClick={() => handleProcessImages("KEYWORDS")} 
-                disabled={isProcessing || images.filter(img => img.selected).length === 0}
+                disabled={Object.keys(processingImages).length > 0 || images.filter(img => img.selected).length === 0}
                 className="sign-up"
                 style={{
-                  backgroundColor: isProcessing ? '#ccc' : '#4a6cf7',
+                  backgroundColor: Object.keys(processingImages).length > 0 ? '#ccc' : '#4a6cf7',
                   padding: '0.3rem 0.6rem',
                   fontSize: '0.8rem'
                 }}
@@ -295,10 +307,10 @@ function StockImageProcessor() {
                 Process Keywords
               </button>
               <button onClick={()=> handleProcessImages("CATEGORY")} 
-                disabled={isProcessing || images.filter(img => img.selected).length === 0}
+                disabled={Object.keys(processingImages).length > 0 || images.filter(img => img.selected).length === 0}
                 className="sign-up"
                 style={{
-                  backgroundColor: isProcessing ? '#ccc' : '#4a6cf7',
+                  backgroundColor: Object.keys(processingImages).length > 0 ? '#ccc' : '#4a6cf7',
                   padding: '0.3rem 0.6rem',
                   fontSize: '0.8rem'
                 }}

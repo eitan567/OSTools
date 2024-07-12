@@ -273,13 +273,24 @@ async def process_image_and_update(file_name, db, type):
 
         isProcessed = updated_title and updated_keywords and updated_category or False   
 
+        # await notify_clients({
+        #     "filename": file_name,
+        #     "status": (isProcessed and "processed") or "not processed",
+        #     "title": title,
+        #     "keywords": keywords,
+        #     "category": category
+        # })
+
+        current_image_data = await db.images.find_one({"filename": file_name})
+
         await notify_clients({
             "filename": file_name,
             "status": (isProcessed and "processed") or "not processed",
-            "title": title,
-            "keywords": keywords,
-            "category": category
+            "title": current_image_data.get("title"),
+            "keywords": current_image_data.get("keywords"),
+            "category": current_image_data.get("category")
         })
+
     except Exception as e:
         logger.exception(f"Error processing {file_name}: {str(e)}")
         error_message = str(e)

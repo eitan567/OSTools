@@ -35,7 +35,7 @@ const StatusIcon = ({ status }) => {
   }
 };
 
-const ImageTable = ({ images, onRegenerateField, onSelectImage, onSelectAll, onProcessImage }) => {
+const ImageTable = ({ images, onRegenerateField, onSelectImage, onSelectAll, onProcessImage, processingImages }) => {  
   const [selectAll, setSelectAll] = useState(false);
   const [orderBy, setOrderBy] = useState(null);
   const [order, setOrder] = useState('asc');
@@ -211,42 +211,43 @@ const ImageTable = ({ images, onRegenerateField, onSelectImage, onSelectAll, onP
                   <span>{image.filename}</span>
                 </Tooltip>
               </TableCell>
+
               <TableCell style={tableStyles.cell}>
-                {image.status === 'processed' ? (
+                {processingImages[image.filename] === 'ALL' || processingImages[image.filename] === 'TITLE' ? 'Processing...' : 
+                (image.status === 'processed' ? (
                   <TextFieldWithRegenerate
                     value={image.title || ''}
                     onRegenerate={() => onRegenerateField('title', image.filename)}
                     tooltipTitle={image.title || ''}
                     compact={true}
                   />
-                ) : (
-                  '-'
-                )}
+                ) : image.title || '-')}
               </TableCell>
+
               <TableCell style={tableStyles.cell}>
-                {image.status === 'processed' ? (
+                {processingImages[image.filename] === 'ALL' || processingImages[image.filename] === 'KEYWORDS' ? 'Processing...' : 
+                (image.status === 'processed' ? (
                   <TextFieldWithRegenerate
                     value={image.keywords || ''}
                     onRegenerate={() => onRegenerateField('keywords', image.filename)}
                     tooltipTitle={image.keywords || ''}
                     compact={true}
                   />
-                ) : (
-                  '-'
-                )}
+                ) : image.keywords || '-')}
               </TableCell>
+
               <TableCell style={tableStyles.cell}>
-                {image.status === 'processed' ? (
+                {processingImages[image.filename] === 'ALL' || processingImages[image.filename] === 'CATEGORY' ? 'Processing...' : 
+                (image.status === 'processed' ? (
                   <TextFieldWithRegenerate
                     value={getCategoryName(image.category) || ''}
                     onRegenerate={() => onRegenerateField('category', image.filename)}
                     tooltipTitle={getCategoryName(image.category) || ''}
                     compact={true}
                   />
-                ) : (
-                  '-'
-                )}
+                ) : getCategoryName(image.category) || '-')}
               </TableCell>
+              
               <TableCell style={tableStyles.cell}>
                 <StatusIcon status={image.status} />
               </TableCell>
