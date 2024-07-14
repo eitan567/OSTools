@@ -3,11 +3,13 @@ import json
 import re
 from PIL import Image
 import logging
-from util import Util
+# from util import Util
 from functools import wraps
 import asyncio
 from openai import AsyncOpenAI
 from ollama import AsyncClient
+from util import Util
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO,
@@ -67,6 +69,8 @@ def get_image_title(file_path):
             elif img.format == 'PNG':
                 if 'Title' in img.info:
                     return img.info.get('Title')
+                elif 'Description' in img.info:
+                    return img.info.get('Description')
             return file_path.split('\\')[-1].split('.')[0]
     except Exception as e:
         logger.error(f"Error reading image metadata: {str(e)}")
@@ -137,16 +141,17 @@ async def get_keywords(client, file_path, original_title):
     # Response format: {{"Keywords": ["keyword1", "keyword2", ...]}}."""
 
     # keywords_prompt = f"Using the context '{original_title}', analyze this stock image and provide related keywords. Provide at least 49 unique words. Respond using JSON."
-    keywords_prompt = f"""Generate 80 ENGLISH ONLY unique single-word keywords related only to this text:'{original_title}'. 
-                          For the first 10 words focused on the main subject of the sentence and then add additional words related to the main subject.
-                          exclude words like "a","the","he","she","are", "for" and similar concept words.
-                          sort the keywords from the most important and most subject focused.
-                          IMPORTANT: Don't use conjunction words.
-                          Respond using JSON."""
+    # keywords_prompt = f"""Generate 80 ENGLISH ONLY unique single-word keywords related only to this text:'{original_title}'. 
+    #                       For the first 10 words focused on the main subject of the sentence and then add additional words related to the main subject.
+    #                       exclude words like "a","the","he","she","are", "for" and similar concept words.
+    #                       sort the keywords from the most important and most subject focused.
+    #                       IMPORTANT: Don't use conjunction words.
+    #                       Respond using JSON."""
+    keywords_prompt=f"""give me 49 most relevant and objective and subject focused keywords for the text "{original_title}" response using Json in the format of: {{Keywords:['keyword1','keyword2','keyword3','keyword4','keyword5'...]}}"""
 
     while len(unique_keywords) < 30 and retry_count < 5:
         response = await client.generate(
-            model="llama3",
+            model="gemma2",
             prompt=f"{keywords_prompt}\nResponse format: {{\"Keywords\": [\"keyword1\", \"keyword2\", ...]}}",
             # images=[file_path],
             format="json",
@@ -207,21 +212,21 @@ async def process_image(file_path, image_data, type):
     logger.info(f"Processing image: {file_path}")
     logger.info(f"Original title: {original_title}")
     
-    cleaned_original_title = Util.clean_prompt(original_title)
-    logger.info(f"Cleaned original title: {cleaned_original_title}")
+    # cleaned_original_title = Util.clean_prompt(original_title)
+    # logger.info(f"Cleaned original title: {cleaned_original_title}")
     
     logger.info(f"Processed {file_path}:")
     
     match type:
         case "TITLE":
-            title_task = get_title(client, file_path, cleaned_original_title)    
+            title_task = get_title(client, file_path, original_title)    
             title = await asyncio.gather(title_task)
             
             logger.info(f"Title: {title}")
             
             return title[0]
         case "CATEGORY":
-            category_task = get_category(client, file_path, cleaned_original_title)
+            category_task = get_category(client, file_path, original_title)
             category = await asyncio.gather(category_task)
             
             logger.info(f"Category: {category}")
@@ -231,27 +236,31 @@ async def process_image(file_path, image_data, type):
             retry_count=0
             unique_keywords.clear()
             
-            keywords_task = get_keywords(client, file_path, cleaned_original_title)
+            keywords_task = get_keywords(client, file_path, original_title)
             keywords = await asyncio.gather(keywords_task)
+            yakeKeywords = Util.getYakeKeywords(original_title)   
+            mergedKeywords = Util.mergeKeywordLists(yakeKeywords,keywords[0])[:49]
+            logger.info(f"Keywords: {mergedKeywords}")
             
-            logger.info(f"Keywords: {keywords[0]}")
-            
-            return ", ".join(keywords[0])
+            return ", ".join(mergedKeywords)
         case _:
             retry_count=0
             unique_keywords.clear()
 
-            title_task = get_title(client, file_path, cleaned_original_title)
-            category_task = get_category(client, file_path, cleaned_original_title)
-            keywords_task = get_keywords(client, file_path, cleaned_original_title)            
+            title_task = get_title(client, file_path, original_title)
+            category_task = get_category(client, file_path, original_title)
+            keywords_task = get_keywords(client, file_path, original_title)            
             
             title, category, keywords = await asyncio.gather(
                 title_task, category_task, keywords_task
             )
-            
+
+            yakeKeywords = Util.getYakeKeywords(original_title)   
+            mergedKeywords = Util.mergeKeywordLists(yakeKeywords,keywords)[:49]
+
             logger.info(f"Title: {title}")
             logger.info(f"Category: {category}")
-            logger.info(f"Keywords: {', '.join(keywords) if isinstance(keywords, list) else keywords}")
+            logger.info(f"Keywords: {', '.join(mergedKeywords) if isinstance(mergedKeywords, list) else mergedKeywords}")
             
             return title, ', '.join(keywords), category
 

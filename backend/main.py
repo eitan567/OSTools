@@ -13,6 +13,7 @@ from typing import List
 import csv
 from fastapi.responses import FileResponse, Response
 from sse_starlette.sse import EventSourceResponse, ServerSentEvent
+from util import Util
 from image_processor import process_image, get_image_title
 from database import get_database, save_image_data
 import logging
@@ -152,7 +153,8 @@ async def upload_images(files: list[UploadFile] = File(...)):
         
         # Extract original title
         original_title = get_image_title(original_path)
-        
+        cleaned_original_title = Util.clean_prompt(original_title)
+
         # Resize and save the image
         with Image.open(io.BytesIO(content)) as img:
             # Resize the image
@@ -170,7 +172,7 @@ async def upload_images(files: list[UploadFile] = File(...)):
             "filename": file.filename, 
             "status": "not processed",
             "thumbnail": thumbnail,
-            "original_title": original_title
+            "original_title": cleaned_original_title
         })
     
     return {"message": f"{len(files)} images uploaded successfully", "file_names": file_names}

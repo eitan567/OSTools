@@ -4647,3 +4647,256 @@
 2024-07-14 12:08:38,237 - image_processor - INFO - Category: 13
 2024-07-14 12:08:38,237 - image_processor - INFO - Keywords: liberty, iconic, visual, glamorous, creative, wingtips, ornate, texture, innovative, sleek, exquisite, artistic, patriotic, eagle, stylized, shield, streamlined, graphic, elegant, striped, refined, national, freedom, feathers, sophisticated, design, polished, white, illustrative, flag, unique, embellished, background, symbolic, pattern, distinctive, detailed, decorative, american
 2024-07-14 12:08:38,237 - database - INFO - Saving data for A bald eagle with spread-3775.png: Type= ALL, Original Title=Stylized American Eagle with Flag Design, Embellished with Striped Feathers and Decorative Wing Tips on a White Background, Title=Stylized American Eagle with Flag Design, Embellished with Striped Feathers and Decorative Wing Tips on a White Background, Keywords=liberty, iconic, visual, glamorous, creative, wingtips, ornate, texture, innovative, sleek, exquisite, artistic, patriotic, eagle, stylized, shield, streamlined, graphic, elegant, striped, refined, national, freedom, feathers, sophisticated, design, polished, white, illustrative, flag, unique, embellished, background, symbolic, pattern, distinctive, detailed, decorative, american, Category=13
+2024-07-14 14:21:02,363 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\48-year-old business man in glasses with brown gra-157.png
+2024-07-14 14:21:02,364 - image_processor - INFO - Original title: 48-year-old business man in glasses with brown gra-157
+2024-07-14 14:21:02,369 - image_processor - INFO - Cleaned original title: 48 year old business man in glasses with brown gra 157
+2024-07-14 14:21:02,369 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\48-year-old business man in glasses with brown gra-157.png:
+2024-07-14 14:21:10,561 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 14:21:17,101 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 14:21:25,240 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 14:21:25,242 - image_processor - INFO - Title: Confident 48-Year-Old Businessman with Glasses in Office Environment
+2024-07-14 14:21:25,242 - image_processor - INFO - Category: 8
+2024-07-14 14:21:25,242 - image_processor - INFO - Keywords: authority, man, ambitious, executive, suit, formal, dressy, vintage, target, recognition, achievement, results, middle, businessman, success, old, prestige, skilled, forty, experienced, goal, innovative, objective, managerial, glasses, year, reputable, age, professional, retro, strategic, leadership, mature, corporate, driven, eight, aged, brown, practical, knowledgeable, official, tactical, respectable, established
+2024-07-14 14:21:25,243 - database - INFO - Saving data for 48-year-old business man in glasses with brown gra-157.png: Type= ALL, Original Title=48-year-old business man in glasses with brown gra-157, Title=Confident 48-Year-Old Businessman with Glasses in Office Environment, Keywords=authority, man, ambitious, executive, suit, formal, dressy, vintage, target, recognition, achievement, results, middle, businessman, success, old, prestige, skilled, forty, experienced, goal, innovative, objective, managerial, glasses, year, reputable, age, professional, retro, strategic, leadership, mature, corporate, driven, eight, aged, brown, practical, knowledgeable, official, tactical, respectable, established, Category=8
+2024-07-14 14:21:34,250 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\48-year-old business man in glasses with brown gra-157.png
+2024-07-14 14:21:34,251 - image_processor - INFO - Original title: 48-year-old business man in glasses with brown gra-157
+2024-07-14 14:21:34,251 - image_processor - INFO - Cleaned original title: 48 year old business man in glasses with brown gra 157
+2024-07-14 14:21:34,251 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\48-year-old business man in glasses with brown gra-157.png:
+2024-07-14 14:21:34,792 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 14:21:34,794 - image_processor - INFO - Category: [8]
+2024-07-14 14:21:36,786 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\48-year-old business man in glasses with brown gra-157.png
+2024-07-14 14:21:36,786 - image_processor - INFO - Original title: 48-year-old business man in glasses with brown gra-157
+2024-07-14 14:21:36,786 - image_processor - INFO - Cleaned original title: 48 year old business man in glasses with brown gra 157
+2024-07-14 14:21:36,786 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\48-year-old business man in glasses with brown gra-157.png:
+2024-07-14 14:21:44,849 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 14:21:44,850 - image_processor - INFO - Title: ['48 Year Old Business Man in Glasses with Brown Hair, Suit and Tie']
+2024-07-14 15:14:56,252 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 15:14:56,253 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 15:14:56,253 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 15:15:05,934 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 15:15:05,936 - image_processor - INFO - Title: ['3D Animation Style Cloudy Sea with Boat and Flying Plane']
+2024-07-14 15:15:05,936 - database - INFO - Saving data for 3d animation style in the-1114.png: Type= TITLE, Original Title=3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high, Title=3D Animation Style Cloudy Sea with Boat and Flying Plane, Keywords=None, Category=None
+2024-07-14 16:29:14,977 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 16:29:14,978 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 16:29:14,978 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 16:29:25,014 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 16:29:29,684 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 16:29:37,867 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 16:29:37,869 - image_processor - INFO - Title: Mid-Cloudy Sky, Serene Water and Boat at Dusk
+2024-07-14 16:29:37,869 - image_processor - INFO - Category: 16
+2024-07-14 16:29:37,869 - image_processor - INFO - Keywords: flying, flight, nautical, environment, rendering, atmosphere, simulate, aviation, illusion, airspace, vessel, cloudy, soar, water, artificial, propeller, movement, boat, visualize, digital, helicopter, scene, 3d, style, drift, aircraft, jetstream, see, glide, animation, midddle, weather, plane, sway, rise, modeling, high, realistic
+2024-07-14 16:29:37,870 - database - INFO - Saving data for 3d animation style in the-1114.png: Type= ALL, Original Title=3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high, Title=Mid-Cloudy Sky, Serene Water and Boat at Dusk, Keywords=flying, flight, nautical, environment, rendering, atmosphere, simulate, aviation, illusion, airspace, vessel, cloudy, soar, water, artificial, propeller, movement, boat, visualize, digital, helicopter, scene, 3d, style, drift, aircraft, jetstream, see, glide, animation, midddle, weather, plane, sway, rise, modeling, high, realistic, Category=16
+2024-07-14 16:37:03,539 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 16:37:03,540 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 16:37:03,541 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 16:37:12,027 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 16:38:41,671 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 16:38:41,672 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 16:38:41,672 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 16:38:45,399 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 16:39:45,474 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 16:39:45,474 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 16:39:45,475 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 16:39:48,930 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 21:12:34,055 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 21:12:34,057 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 21:12:34,057 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 21:12:47,904 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 21:13:16,045 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 21:13:16,045 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 21:13:16,046 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 21:13:19,179 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 21:14:09,239 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 21:14:09,240 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 21:14:09,241 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 21:14:12,455 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 21:44:06,176 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 21:44:06,178 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 21:44:06,178 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 21:44:18,046 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:07:26,081 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 22:07:26,082 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:07:26,082 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 22:07:34,367 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:10:20,260 - image_processor - INFO - Keywords: [['animation', 'style', 'boat', 'high', 'midddle', 'cloudy', 'plane', 'animation style', 'flying high', 'plane flying'], ['animation', 'style', 'boat', 'high', 'midddle', 'cloudy', 'plane', 'animation style', 'flying high', 'plane flying'], ['animation', 'style', 'boat', 'high', 'midddle', 'cloudy', 'plane', 'animation style', 'flying high', 'plane flying'], ['animation', 'style', 'boat', 'high', 'midddle', 'cloudy', 'plane', 'animation style', 'flying high', 'plane flying'], ['animation', 'style', 'boat', 'high', 'midddle', 'cloudy', 'plane', 'animation style', 'flying high', 'plane flying'], 'midddle', 'flying', 'spotlight', 'graphic', 'horizon', 'vision', 'style', 'plane', 'realistic', 'centerpiece', 'atmosphere', 'depth', 'digital', 'layered', 'airborne', 'movement', 'vantage', 'cloudy', 'point', 'position', 'water', '3d', 'rendering', 'weather', 'dimensional', 'visual', 'skies', 'animation', 'boat', 'image', 'sea', 'sweep', 'perspective', 'high', 'blue', 'distance']
+2024-07-14 22:12:23,493 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 22:12:23,494 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:12:23,494 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 22:12:26,834 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:12:55,172 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 22:12:55,172 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:12:55,172 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 22:12:58,011 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:18:51,507 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 22:18:51,507 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:18:51,507 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 22:18:59,174 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:19:33,036 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 22:19:33,037 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:19:33,037 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 22:19:36,545 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:31:13,014 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 22:31:13,015 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:31:13,015 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 22:31:21,635 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:32:42,311 - image_processor - INFO - Keywords: ['animation', 'style', 'boat', 'high', 'midddle', 'cloudy', 'plane', 'animation style', 'flying high', 'plane flying', 'soar', 'navigate', 'blue', 'sail', 'aquatic', 'simulate', 'luminescent', 'aviation', 'sparkling', 'shading', 'airborne', 'visualize', 'propeller', 'realistic', 'compositing', 'buoyant', 'jetstream', 'layering', 'photorealism', 'windy', 'vessel', 'flying', 'refraction', 'virtual', 'sea', 'glimmering', 'illumination', 'gray', 'white', 'luminous', 'nautical', 'rendering', 'skies', 'keel', 'modeling', 'water', 'reflection', '3d', 'piercing']
+2024-07-14 22:33:21,698 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 22:33:21,698 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:33:21,699 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 22:33:24,497 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:34:11,322 - image_processor - INFO - Keywords: ['animation', 'style', 'boat', 'high', 'midddle', 'cloudy', 'plane', 'animation style', 'flying high', 'plane flying', 'physics', 'motion', 'computer', 'visualize', 'depth', 'perspective', 'realistic', 'inspiration', 'thrilling', 'mathematical', 'simulation', 'immersive', 'width', 'epic', 'discovery', 'artificial', 'projection', 'algorithm', 'flying', 'length', 'intelligence', 'dimension', 'digital', 'system', 'adventurous', 'spatial', 'creative', 'geometry', 'cube', 'exploration', '3d', 'rendering', 'coordinate', 'graphics', 'modeling', 'water', 'middle', 'sphere', 'dimensional', 'innovative', 'virtual', 'height', 'rendered']
+2024-07-14 22:34:41,719 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 22:34:41,719 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:34:41,719 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 22:34:45,357 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:34:45,373 - image_processor - INFO - Keywords: ['animation', 'style', 'boat', 'high', 'midddle', 'cloudy', 'plane', 'animation style', 'flying high', 'plane flying', 'free', 'gusts', 'motion', 'unencumbered', 'breathe', 'peace', 'depth', 'stormy', 'gravity', 'winds', 'airflow', 'perspective', 'serenity', 'clear', 'see', 'furious', 'effortless', 'quiet', 'swiftness', 'width', 'breeze', 'wide', 'ventilation', 'fluency', 'course', 'speed', 'directional', 'flying', 'relaxation', 'realism', 'visualization', 'tranquility', 'meditate', 'pull', 'silhouette', 'vast', 'skies', 'narrow', 'open', 'illusion', 'middle', 'expanse', '3d', 'liberated']
+2024-07-14 22:35:16,886 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 22:35:16,886 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:35:16,886 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 22:35:20,466 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:35:20,477 - image_processor - INFO - Keywords: ['animation', 'style', 'boat', 'high', 'midddle', 'cloudy', 'plane', 'animation style', 'flying high', 'plane flying', 'dynamic', 'sweeping', 'misty', 'hazy', 'flowing', 'unstable', 'dense', 'whimsical', 'visualize', 'puffy', 'lively', 'breezy', 'see', 'bubbly', 'weightless', 'sky', 'aerodynamic', 'floating', 'swift', 'aerial', 'windy', 'vessel', 'fanciful', 'gusty', 'heightened', 'flying', 'pellucid', 'foggy', 'fluffy', 'fast', 'drifting', 'turbulent', 'translucent', 'wingspan', 'luminous', 'gaseous', 'vibrant', 'unpredictable', 'water', 'currents', 'celestial', '3d', 'ethereal']
+2024-07-14 22:36:34,511 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 22:36:34,511 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:36:34,511 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 22:36:38,082 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:36:38,093 - image_processor - INFO - Keywords: ['animation', 'style', 'boat', 'high', 'midddle', 'cloudy', 'plane', 'animation style', 'flying high', 'plane flying', 'landscape', 'dynamic', 'interactive', 'sweeping', 'airborne', 'depth', 'soaring', 'skybound', 'graphic', 'realistic', 'thrilling', 'see', 'simulation', 'immersive', 'captivating', 'cinematic', 'widescreen', 'scenic', 'heightened', 'flying', 'realism', 'simulated', 'digital', 'elevated', 'engaging', 'visual', '3d', 'panoramic', 'rendering', 'worlds', 'kinetic', 'fantasy', 'ethereal', 'modeling', 'computerized', 'water', 'celestial', 'dimensional', 'virtual']
+2024-07-14 22:36:41,868 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 22:36:41,869 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:36:41,869 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 22:36:45,078 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:36:45,088 - image_processor - INFO - Keywords: ['animation', 'style', 'boat', 'high', 'midddle', 'cloudy', 'plane', 'animation style', 'flying high', 'plane flying', 'soar', 'helicopter', 'simulate', 'aviation', 'motion', 'airborne', 'visualize', 'propeller', 'graphic', 'realistic', 'reality', 'see', 'rotor', 'flight', 'sky', 'tail', 'wing', 'vessel', 'atmosphere', 'digital', 'fin', 'cloud', 'weather', 'rendering', 'glide', 'drift', 'keel', 'graphics', 'modeling', 'water', 'computerized', 'environment', 'scene', '3d', 'virtual']
+2024-07-14 22:37:40,756 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 22:37:40,756 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:37:40,757 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 22:37:44,034 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:37:44,045 - image_processor - INFO - Keywords: ['animation', 'style', 'boat', 'high', 'midddle', 'cloudy', 'plane', 'animation style', 'flying high', 'plane flying', 'hover', 'gently', 'momentum', 'invisible', 'lullaby', 'wave', 'airborne', 'depth', 'soaring', 'graphic', 'realistic', 'artistry', 'see', 'expansive', 'immersive', 'undulate', 'ripples', 'melody', 'symphony', 'aerial', 'velocity', 'suspend', 'rock', 'liberty', 'speed', 'boundless', 'billow', 'flying', 'float', 'movement', 'dangle', 'freedom', 'harmony', 'engaging', 'wingspan', 'visual', 'sensory', '3d', 'rendering', 'propulsion', 'drift', 'pause', 'oscillate']
+2024-07-14 22:40:25,311 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 22:40:25,312 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:40:25,312 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 22:40:28,799 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:40:28,809 - image_processor - INFO - Keywords: ['animation', 'style', 'boat', 'high', 'midddle', 'cloudy', 'plane', 'animation style', 'flying high', 'plane flying', 'misty', 'hazy', 'experimental', 'fantastical', 'computer', 'airborne', 'soaring', 'flight', 'simulation', 'waterway', 'render', 'aerial', 'maritime', 'imaginative', 'dreamy', 'liberty', 'gauzy', 'sea', 'realism', 'foggy', 'digital', 'coastal', 'elevated', 'skyward', 'freedom', 'turbulent', 'creative', 'visual', 'nautical', 'graphics', 'modeling', 'artistic', 'middle', 'oceanic', '3d', 'innovative', 'virtual']
+2024-07-14 22:40:55,834 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png
+2024-07-14 22:40:55,835 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:40:55,835 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png:
+2024-07-14 22:40:59,133 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:41:05,475 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:41:10,909 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:41:10,920 - image_processor - INFO - Title: 3D Animation Style: Cloudy Sky with Boat and Flying Plane
+2024-07-14 22:41:10,920 - image_processor - INFO - Category: 6
+2024-07-14 22:41:10,921 - image_processor - INFO - Keywords: animation, style, boat, high, midddle, cloudy, plane, animation style, flying high, plane flying, blue, navigation, aviation, control, visualize, depth, distance, engine, perspective, altitude, realistic, direction, dimensional, pathfinder, route, pilot, render, tail, velocity, wing, surreal, compass, orientation, wavy, speed, lift, flying, movement, sea, guidance, model, cockpit, space, propulsion, water, artistic, aircraft, illusion, middle, nacelle, 3d, virtual
+2024-07-14 22:41:10,921 - database - INFO - Saving data for 3d animation style in the-1115.png: Type= ALL, Original Title=3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high, Title=3D Animation Style: Cloudy Sky with Boat and Flying Plane, Keywords=blue, navigation, plane, high, aviation, control, visualize, depth, distance, engine, perspective, altitude, realistic, direction, dimensional, pathfinder, route, animation, pilot, render, tail, cloudy, velocity, wing, surreal, compass, style, orientation, wavy, speed, lift, flying, movement, sea, boat, guidance, model, cockpit, space, propulsion, water, artistic, aircraft, illusion, middle, nacelle, 3d, virtual, Category=6
+2024-07-14 22:41:12,526 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1116.png
+2024-07-14 22:41:12,526 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:41:12,526 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1116.png:
+2024-07-14 22:41:13,404 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:41:21,134 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:41:25,040 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:41:25,051 - image_processor - INFO - Title: Cloudy Sky with 3D Boat and Flying Plane
+2024-07-14 22:41:25,052 - image_processor - INFO - Category: 6
+2024-07-14 22:41:25,053 - image_processor - INFO - Keywords: animation, style, boat, high, midddle, cloudy, plane, animation style, flying high, plane flying, blue, imaginary, airborne, depth, practical, graphic, dimensional, aerodynamic, waterway, cinema, oceanic, jetstream, real, velocity, scenic, illusion, wavy, speed, spectrum, lift, sea, realism, digital, endless, vfx, visual, panoramic, rendering, propulsion, fly, airspeed, fantasy, fictional, artistic, movie, expanse, 3d, virtual
+2024-07-14 22:41:25,054 - database - INFO - Saving data for 3d animation style in the-1116.png: Type= ALL, Original Title=3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high, Title=Cloudy Sky with 3D Boat and Flying Plane, Keywords=blue, plane, high, imaginary, airborne, depth, practical, graphic, dimensional, aerodynamic, waterway, animation, cinema, oceanic, jetstream, real, cloudy, velocity, scenic, style, illusion, wavy, speed, spectrum, lift, sea, boat, realism, digital, endless, vfx, visual, panoramic, rendering, propulsion, fly, airspeed, fantasy, fictional, artistic, midddle, movie, expanse, 3d, virtual, Category=6
+2024-07-14 22:52:58,841 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 22:52:58,842 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:52:58,842 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 22:53:02,949 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:53:02,963 - image_processor - INFO - Keywords: ['animation', 'style', 'boat', 'high', 'midddle', 'cloudy', 'plane', 'animation style', 'flying high', 'plane flying', 'digital', 'suspense', 'journey', 'movement', 'middle', 'sky', 'waves', 'light', 'film', 'visuals', 'maritime', 'shadow', 'motion', 'environment', 'texture', 'design', 'calm', 'scene', 'fantasy', 'view', 'ocean', 'model', 'flying', 'clouds', 'graphics', 'software', 'horizon', 'artist', 'tranquility', 'concept', 'perspective', 'depth', 'narrative', 'storytelling', 'sea', 'speed', 'direction', 'aerial', 'render']
+2024-07-14 22:53:34,950 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png
+2024-07-14 22:53:34,951 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:53:34,951 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png:
+2024-07-14 22:53:42,143 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:53:42,153 - image_processor - INFO - Keywords: ['animation', 'style', 'boat', 'high', 'midddle', 'cloudy', 'plane', 'animation style', 'flying high', 'plane flying', 'travel', 'middle', 'sky', 'waves', 'sail', 'visuals', 'stormy', 'motion', 'environment', 'island', 'cargo', 'target', 'texture', 'aircraft', 'cockpit', 'calm', 'scene', 'character', 'shader', 'fantasy', 'backdrop', 'tail', 'ocean', 'flying', 'clouds', 'graphics', 'realistic', 'horizon', 'modeling', 'navigation', 'flight', 'perspective', 'depth', 'rendering', 'weather', 'mast', 'hull', 'storytelling', 'sea']
+2024-07-14 22:53:53,177 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1116.png
+2024-07-14 22:53:53,177 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:53:53,177 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1116.png:
+2024-07-14 22:53:56,948 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:53:56,960 - image_processor - INFO - Keywords: ['animation', 'style', 'boat', 'high', 'midddle', 'cloudy', 'plane', 'animation style', 'flying high', 'plane flying', 'travel', 'middle', 'sky', 'waves', 'visuals', 'stormy', 'shadow', 'motion', 'environment', 'island', 'texture', 'wind', 'aircraft', 'design', 'dreamlike', 'calm', 'scene', 'ocean', 'flying', 'clouds', 'graphics', 'horizon', 'imaginary', 'distortion', 'navigation', 'perspective', 'depth', 'rendering', 'surreal', 'illusion', 'sea', 'voyage', 'speed', 'reflection', '3d', 'sailboat', 'altitude', 'water', 'adventure']
+2024-07-14 22:56:39,308 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 22:56:39,309 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:56:39,309 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 22:56:45,903 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:56:45,917 - image_processor - INFO - Keywords: ['animation', 'style', 'boat', 'high', 'midddle', 'cloudy', 'plane', 'animation style', 'flying high', 'plane flying', 'adventure', 'airplane', 'aerial view', 'narrative', '3d modeling', 'ocean', 'peace', 'generative art', 'midjourney', 'exploration', 'lighting', 'perspective', 'landscape', 'digital art', '3d animation', 'computer graphics', 'storytelling', 'ship', 'rendering', 'fantasy', 'surreal', 'flight', 'dalle-2', 'color palette', 'travel', 'atmospheric perspective', 'visual effects', 'animation software', 'water simulation', 'cloud animation', 'motion graphics', 'abstract', 'freedom', 'serenity', 'cloudy sea', 'photography', 'dreamlike', 'environment', 'illustration']
+2024-07-14 22:57:36,264 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png
+2024-07-14 22:57:36,264 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:57:36,264 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png:
+2024-07-14 22:57:41,820 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:57:41,830 - image_processor - INFO - Keywords: ['animation', 'style', 'boat', 'high', 'midddle', 'cloudy', 'plane', 'animation style', 'flying high', 'plane flying', 'adventure', 'aerial view', '3d modeling', 'ocean', 'mid-air', 'perspective', 'lighting', 'digital art', '3d animation', 'clouds', 'computer graphics', 'transportation', 'ship', 'rendering', 'peaceful', 'fantasy', 'foreground', 'aviation', 'artistic style', 'animation software', 'graphic design', 'water', 'harmony', 'motion graphics', 'animation techniques', 'marine', 'contrast', 'imagination', 'flying', 'solitude', 'shading', 'cloudy sea', 'filmmaking', 'dreamlike', 'environment', 'cinematic', 'texture', 'sky', 'sailing']
+2024-07-14 22:57:56,806 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1117.png
+2024-07-14 22:57:56,806 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:57:56,806 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1117.png:
+2024-07-14 22:58:04,938 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:58:17,308 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:58:17,590 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:58:17,602 - image_processor - INFO - Title: Sunset Serenity with a Rowboat and Flying Plane
+2024-07-14 22:58:17,602 - image_processor - INFO - Category: 6
+2024-07-14 22:58:17,602 - image_processor - INFO - Keywords: animation, style, boat, high, midddle, cloudy, plane, animation style, flying high, plane flying, scene, sea, aerial view, ocean, realism, digital illustration, mid-air, lighting, perspective, landscape, digital art, 3d animation, blue skies, sunset, storytelling, cloud, transportation, mood, texturing, calm water, flight, fantasy, illustrative, color palette, aviation, visual effects, animation software, graphic design, dynamic scene, sunrise, marine, abstract, flying, cgi, atmosphere, model animation, 3d rendering, sky, sailing
+2024-07-14 22:58:17,603 - database - INFO - Saving data for 3d animation style in the-1117.png: Type= ALL, Original Title=3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high, Title=Sunset Serenity with a Rowboat and Flying Plane, Keywords=scene, sea, aerial view, ocean, realism, boat, digital illustration, mid-air, plane, lighting, perspective, landscape, digital art, 3d animation, blue skies, sunset, storytelling, cloud, transportation, mood, texturing, calm water, flight, fantasy, illustrative, color palette, aviation, visual effects, animation software, graphic design, animation style, dynamic scene, sunrise, marine, abstract, flying, cgi, atmosphere, model animation, 3d rendering, sky, sailing, cloudscape, composition, horizon, water surface, Category=6
+2024-07-14 22:59:14,457 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1116.png
+2024-07-14 22:59:14,458 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:59:14,458 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1116.png:
+2024-07-14 22:59:18,353 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:59:18,364 - image_processor - INFO - Keywords: ['animation', 'style', 'boat', 'high', 'midddle', 'cloudy', 'plane', 'animation style', 'flying high', 'plane flying', 'realistic animation', 'aerial view', '3d modeling', 'ocean', 'calm sea', 'lighting', 'perspective', 'landscape', 'digital art', '3d animation', 'clouds', 'sunset', 'abstract animation', 'transportation', 'rendering', 'fantasy animation', 'visual effects', 'blue hues', 'water', 'motion graphics', 'dynamic scene', 'sunrise', 'flying', 'art direction', 'atmosphere', 'cloudy sea', 'white clouds', 'scene composition', 'marine environment', 'stormy weather', 'depth', 'texture', 'sky', 'aircraft', 'sailing', 'nautical', 'horizon']
+2024-07-14 22:59:24,450 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1117.png
+2024-07-14 22:59:24,451 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:59:24,451 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1117.png:
+2024-07-14 22:59:27,963 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:59:27,975 - image_processor - INFO - Keywords: ['animation', 'style', 'boat', 'high', 'midddle', 'cloudy', 'plane', 'animation style', 'flying high', 'plane flying', 'adventure', 'aerial view', 'narrative', '3d modeling', 'silhouette', 'exploration', 'realistic', 'lighting', 'digital art', '3d animation', 'ocean waves', 'storytelling', 'rendering', 'fantasy', 'travel', 'scene design', 'visual effects', 'science fiction', 'animation software', 'motion graphics', 'visual communication', 'flying', 'cgi', 'art direction', 'water scene', 'cloudy sea', 'shading', 'filmmaking', 'sky background', 'marine environment', 'cartoon', 'texture', 'cloudscape', 'composition', 'stylized']
+2024-07-14 22:59:43,475 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png
+2024-07-14 22:59:43,476 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:59:43,476 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1114.png:
+2024-07-14 22:59:43,971 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:59:43,972 - image_processor - INFO - Category: [16]
+2024-07-14 22:59:44,677 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png
+2024-07-14 22:59:44,678 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:59:44,678 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png:
+2024-07-14 22:59:44,941 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:59:44,942 - image_processor - INFO - Category: [6]
+2024-07-14 22:59:46,893 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1116.png
+2024-07-14 22:59:46,894 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:59:46,894 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1116.png:
+2024-07-14 22:59:47,273 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:59:47,274 - image_processor - INFO - Category: [16]
+2024-07-14 22:59:48,021 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1117.png
+2024-07-14 22:59:48,021 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:59:48,021 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1117.png:
+2024-07-14 22:59:48,289 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:59:48,290 - image_processor - INFO - Category: [16]
+2024-07-14 22:59:49,397 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png
+2024-07-14 22:59:49,397 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:59:49,397 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png:
+2024-07-14 22:59:49,642 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:59:49,644 - image_processor - INFO - Category: [6]
+2024-07-14 22:59:50,661 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png
+2024-07-14 22:59:50,661 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:59:50,661 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png:
+2024-07-14 22:59:50,910 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:59:50,911 - image_processor - INFO - Category: [6]
+2024-07-14 22:59:51,756 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png
+2024-07-14 22:59:51,757 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:59:51,757 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png:
+2024-07-14 22:59:52,020 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:59:52,022 - image_processor - INFO - Category: [6]
+2024-07-14 22:59:52,564 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png
+2024-07-14 22:59:52,565 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:59:52,565 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png:
+2024-07-14 22:59:52,814 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:59:52,816 - image_processor - INFO - Category: [6]
+2024-07-14 22:59:53,284 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png
+2024-07-14 22:59:53,285 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:59:53,285 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png:
+2024-07-14 22:59:53,562 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:59:53,564 - image_processor - INFO - Category: [16]
+2024-07-14 22:59:54,013 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png
+2024-07-14 22:59:54,013 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:59:54,013 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png:
+2024-07-14 22:59:54,285 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:59:54,286 - image_processor - INFO - Category: [6]
+2024-07-14 22:59:55,060 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png
+2024-07-14 22:59:55,061 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:59:55,061 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1115.png:
+2024-07-14 22:59:55,329 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:59:55,330 - image_processor - INFO - Category: [16]
+2024-07-14 22:59:56,052 - image_processor - INFO - Processing image: c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1116.png
+2024-07-14 22:59:56,052 - image_processor - INFO - Original title: 3d animation style, in the midddle of the cloudy see, with a boat, a plane flying high
+2024-07-14 22:59:56,053 - image_processor - INFO - Processed c:\OSTools\OSTools\uploaded_images\resized\3d animation style in the-1116.png:
+2024-07-14 22:59:56,307 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/generate "HTTP/1.1 200 OK"
+2024-07-14 22:59:56,308 - image_processor - INFO - Category: [6]

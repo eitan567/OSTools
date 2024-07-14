@@ -64,6 +64,7 @@ const ImageTable = ({ images, onRegenerateField, onSelectImage, onSelectAll, onP
   const ThumbnailTooltip = ({ image }) => (
     <div>
       <strong>Title:</strong> {image.title || 'N/A'}<br/>
+      <strong>Original Title:</strong> {image.original_title || 'N/A'}<br/>
       <strong>Keywords:</strong> {image.keywords || 'N/A'}<br/>
       <strong>Category:</strong> {getCategoryName(image.category) || 'N/A'}<br/>
       <strong>Status:</strong> {image.status}

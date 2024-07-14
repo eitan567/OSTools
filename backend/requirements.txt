@@ -15,3 +15,5 @@ itsdangerous
 pyjwt
 cryptography
 bcrypt  # For password hashing
+sse_starlette
+openai
