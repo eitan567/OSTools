@@ -18,11 +18,11 @@
   }
 
   .subscribe-section{
-    width: 31%;
+    width: 35%;
   }
   
   .form-section{
-    width: 52%;
+    width: 50%;
   }
 
   .form-section{    
@@ -77,8 +77,12 @@
     font-size: 1rem;
   }
 
+  .submit-button{
+    margin-left:0;
+  }
+
   .subscribe-button{
-    width: 100%;
+    width: 99.5%;
     margin: 0;
   }
   

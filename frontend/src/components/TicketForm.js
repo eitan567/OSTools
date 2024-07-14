@@ -19,7 +19,7 @@ const TicketForm = () => {
                 <input type="email" placeholder="Enter your email" />
               </div>
             </div>
-            <div className="form-group">
+            <div className="form-group" style={{"marginBottom": "0px"}}>
               <label>Your Message</label>
               <textarea placeholder="Enter your Message"></textarea>
             </div>
@@ -28,12 +28,14 @@ const TicketForm = () => {
         </div>
         <div className="subscribe-section">
           <h2>Subscribe to receive future updates</h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ullamcorper, massa quis luctus ornare.</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ullamcorper.</p>
           <form>
             <div className="form-group">
+              <label>Your Name</label>
               <input type="text" placeholder="Enter your name" />
             </div>
             <div className="form-group">
+              <label>Your Email</label>
               <input type="email" placeholder="Enter your email" />
             </div>
             <button type="submit" className="subscribe-button">Subscribe</button>
