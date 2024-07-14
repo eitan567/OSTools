@@ -183,63 +183,6 @@ async def get_thumbnail(filename: str):
         return Response(content=base64.b64decode(image["thumbnail"]), media_type="image/png")
     raise HTTPException(status_code=404, detail="Thumbnail not found")
 
-# async def process_image_and_update(file_name, db, type):
-#     try:
-#         title, keywords, category = None, None, None
-#         await notify_clients({"filename": file_name, "status": "processing"})
-        
-#         # Get the original title from the database
-#         image_data = await db.images.find_one({"filename": file_name})
-#         # Retrieve a specific field value      
-
-#         # Process resized image
-#         file_path = os.path.join(RESIZED_DIR, file_name)
-#         match type:
-#             case "TITLE":
-#                 title = await process_image(file_path, image_data, type)
-#             case "CATEGORY":
-#                 category = await process_image(file_path, image_data, type)
-#             case "KEYWORDS":
-#                 keywords = await process_image(file_path, image_data, type)
-#             case "ALL":
-#                 title, keywords, category = await process_image(file_path, image_data, type)
-#             case _:
-#                 raise ValueError("Invalid type")
-                
-#         # Save data to MongoDB instantly
-#         # if type == "ALL":
-#         await save_image_data(db, file_name, title, keywords, category, type, image_data)
-#         # else:
-#         #     await save_image_data(db, file_name, title and title[0] or "", keywords and keywords[0] or "", category and category[0] or "", type, {db_title, db_keywords, db_category})
-        
-#         # Retrieve a specific field value
-#         image_data = await db.images.find_one({"filename": file_name})
-#         updated_title = image_data.get("title", "")
-#         updated_keywords = image_data.get("keywords", [])
-#         updated_category = image_data.get("category", "")
-
-#         isProcessed = updated_title and updated_keywords and updated_category or False   
-
-#         await notify_clients({
-#             "filename": file_name,
-#             "status": (isProcessed and "processed") or "not processed",
-#             "title": title,
-#             "keywords": keywords,
-#             "category": category
-#         })
-#     except Exception as e:
-#         logger.exception(f"Error processing {file_name}: {str(e)}")
-#         error_message = str(e)
-#         await db.images.update_one(
-#             {"filename": file_name},
-#             {"$set": {"status": "error", "error": error_message}}
-#         )
-#         await notify_clients({
-#             "filename": file_name,
-#             "status": "error",
-#             "error": error_message
-#         })
-
 async def process_image_and_update(file_name, db, type):
     try:
         title, keywords, category = None, None, None
@@ -273,22 +216,12 @@ async def process_image_and_update(file_name, db, type):
 
         isProcessed = updated_title and updated_keywords and updated_category or False   
 
-        # await notify_clients({
-        #     "filename": file_name,
-        #     "status": (isProcessed and "processed") or "not processed",
-        #     "title": title,
-        #     "keywords": keywords,
-        #     "category": category
-        # })
-
-        current_image_data = await db.images.find_one({"filename": file_name})
-
         await notify_clients({
             "filename": file_name,
             "status": (isProcessed and "processed") or "not processed",
-            "title": current_image_data.get("title"),
-            "keywords": current_image_data.get("keywords"),
-            "category": current_image_data.get("category")
+            "title": updated_title,
+            "keywords": updated_keywords,
+            "category": updated_category
         })
 
     except Exception as e:
@@ -303,7 +236,6 @@ async def process_image_and_update(file_name, db, type):
             "status": "error",
             "error": error_message
         })
-
 
 @app.post("/process")
 async def process_images(request: ProcessRequest):
@@ -395,13 +327,13 @@ async def download_csv():
     
     csv_file_path = os.path.join(UPLOAD_DIR, "output_data.csv")
     with open(csv_file_path, 'w', newline='', encoding='utf-8') as csvfile:
-        fieldnames = ['Filename', 'Original Title', 'Title', 'Keywords', 'Category']
+        fieldnames = ['Filename', 'Title', 'Keywords', 'Category']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for img in images:
             writer.writerow({
                 'Filename': img['filename'],
-                'Original Title': img.get('original_title', ''),
+                # 'Original Title': img.get('original_title', ''),
                 'Title': img['title'],
                 'Keywords': img['keywords'],
                 'Category': img['category']
