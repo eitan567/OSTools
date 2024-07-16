@@ -7,6 +7,7 @@ import WaveTool from './components/WaveTool';
 import SignInPage from './components/SignIn';
 import SignUpPage from './components/SignUp';
 import ScrollToHome from './components/scrollToHome';
+import SpriteAnimationTool from './components/sprite-animation-tool';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/stock-image-processor" element={<StockImageProcessor />} />
+          <Route path='/sprite-animation-tool' element={<SpriteAnimationTool />} />
           <Route path="/sign-in" element={<SignInPage />} />
           <Route path="/sign-up" element={<SignUpPage />} />
           <Route path="/wave-tool" element={<WaveTool />} />

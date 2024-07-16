@@ -114,6 +114,9 @@ const LandingPage = () => {
           <a href="/stock-image-processor" className="cta-button secondary">
             Stock Image Processor
           </a>
+          <a href="/sprite-animation-tool" className="cta-button secondary">
+            Sprite Animation Tool
+          </a>
         </section>
 
         <MainFeatures />

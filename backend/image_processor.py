@@ -75,9 +75,10 @@ def get_image_title(file_path):
 @retry()
 async def get_title(client, file_path, original_title):
     title_prompt = f"""Analyze this stock image.
-                       Using the context '{original_title}', generate a professional, descriptive, and objective title for this stock image. The title should be between 100 and 200 characters long. Respond using JSON.
-                       Response format: {{"Title": "..."}}"""
-
+                       Using this original Title as context: '{original_title}', 
+                       generate a professional, descriptive, and objective Title for this stock image,which is for sale in adobe stock.
+                       The Title length should be between 100 and 200 characters long. 
+                       Respond only using JSON. Response format: {{"Title": "..."}}"""
     response = await client.generate(
         model="llava:13b",
         format="json",
