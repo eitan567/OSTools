@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Snackbar, Box, Paper } from '@mui/material';
 import ImageTable from './ImageTable';
 import Header from './Header';
@@ -7,15 +7,17 @@ import './StockImageProcessor.css';
 
 function StockImageProcessor() {
   const [images, setImages] = useState([]);
-  // const [isProcessing, setIsProcessing] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [csvDownloadEnabled, setCsvDownloadEnabled] = useState(false);
   const [processingImages, setProcessingImages] = useState({});
+  const [isConnected, setIsConnected] = useState(true);
+  const [componentKey, setComponentKey] = useState(0);
+  const retryCount = useRef(0);
+  const maxRetries = 5;
+  const retryInterval = 5000; // 5 seconds
 
   const updateImageStatus = useCallback((data) => {
-    console.log("Received data for update:", data);
-  
     setImages(prevImages => prevImages.map(img => 
       img.filename === data.filename 
         ? { 
@@ -29,28 +31,82 @@ function StockImageProcessor() {
         : img
     ));
     
-    console.log("Updated image:", data);
-  
     if (data.status === 'processed' || data.status === 'error') {
       setProcessingImages(prev => {
         const newProcessingImages = { ...prev };
         if (newProcessingImages[data.filename]) {
           delete newProcessingImages[data.filename];
         }
-        console.log("New processing images state after update:", newProcessingImages);
         return newProcessingImages;
       });
     }
   }, []);
 
-  const handleProcessImage = async (filename) => {
+  const fetchImages = useCallback(async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/images`);
+      const data = await response.json();
+      setImages(data.map(img => ({ ...img, selected: false })));
+      const hasProcessedImages = data.some(img => img.status === 'processed');
+      setCsvDownloadEnabled(hasProcessedImages);
+    } catch (error) {
+      console.error('Error fetching images:', error);
+      setSnackbarMessage('Failed to fetch images');
+      setSnackbarOpen(true);
+    }
+  }, []);
+
+  const setupSSE = useCallback(() => {
+    const eventSource = new EventSource(`${process.env.REACT_APP_API_URL}/stream`);
+    
+    eventSource.onopen = () => {
+      console.log('SSE connection opened');
+      setIsConnected(true);
+      retryCount.current = 0;
+      fetchImages();
+      setComponentKey(prev => prev + 1); // Force re-render
+    };
+
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'keep-alive') return;
+        updateImageStatus(data);
+      } catch (error) {
+        console.error('Error parsing SSE data:', error, event.data);
+      }
+    };
+  
+    eventSource.onerror = (error) => {
+      console.error('SSE error:', error);
+      eventSource.close();
+      setIsConnected(false);
+
+      if (retryCount.current < maxRetries) {
+        retryCount.current += 1;
+        console.log(`Attempting to reconnect in ${retryInterval / 1000} seconds (Attempt ${retryCount.current}/${maxRetries})`);
+        setTimeout(setupSSE, retryInterval);
+      } else {
+        console.log('Max retry attempts reached. Please refresh the page manually.');
+      }
+    };
+  
+    return () => eventSource.close();
+  }, [fetchImages, updateImageStatus]);
+
+  useEffect(() => {
+    fetchImages();
+    return setupSSE();
+  }, [setupSSE, fetchImages]);
+
+  const handleProcessImage = useCallback(async (filename) => {
     setProcessingImages(prev => ({ ...prev, [filename]: 'ALL' }));
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/process/${filename}`, {
         method: 'POST',
       });
       if (!response.ok) throw new Error('Failed to process image');
-      await fetchImages(); // Refresh the image list
+      await fetchImages();
     } catch (error) {
       console.error('Error processing image:', error);
       setSnackbarMessage('Failed to process image');
@@ -62,61 +118,9 @@ function StockImageProcessor() {
         return newProcessingImages;
       });
     }
-  };
-  
+  }, [fetchImages]);
 
-  const setupSSE = useCallback(() => {
-    const eventSource = new EventSource(`${process.env.REACT_APP_API_URL}/stream`);
-    
-    eventSource.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (data.type === 'keep-alive') {
-          console.log('Received keep-alive');
-          return;
-        }
-        console.log("Received SSE data:", data);
-        updateImageStatus(data);
-      } catch (error) {
-        console.error('Error parsing SSE data:', error, event.data);
-      }
-    };
-  
-    eventSource.onerror = (error) => {
-      console.error('SSE error:', error);
-      eventSource.close();
-      setTimeout(setupSSE, 5000); // Attempt to reconnect after 5 seconds
-    };
-  
-    return () => {
-      eventSource.close();
-    };
-  }, [updateImageStatus]);
-
-  useEffect(() => {
-    fetchImages();
-    const cleanup = setupSSE();
-    return cleanup;
-  }, [setupSSE]);
-
-  useEffect(() => {
-    const hasProcessedImages = images.some(img => img.status === 'processed');
-    setCsvDownloadEnabled(hasProcessedImages);
-  }, [images]);
-
-  const fetchImages = async () => {
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/images`);
-      const data = await response.json();
-      setImages(data.map(img => ({ ...img, selected: false })));
-    } catch (error) {
-      console.error('Error fetching images:', error);
-      setSnackbarMessage('Failed to fetch images');
-      setSnackbarOpen(true);
-    }
-  };
-
-  const handleFileUpload = async (event) => {
+  const handleFileUpload = useCallback(async (event) => {
     const files = Array.from(event.target.files);
     if (files.length > 1000) {
       setSnackbarMessage('Maximum 1000 images allowed');
@@ -134,7 +138,7 @@ function StockImageProcessor() {
       });
 
       const result = await response.json();
-      await fetchImages(); // Fetch updated image list
+      await fetchImages();
       setSnackbarMessage(`${result.file_names.length} images uploaded successfully`);
       setSnackbarOpen(true);
     } catch (error) {
@@ -142,9 +146,37 @@ function StockImageProcessor() {
       setSnackbarMessage('Failed to upload images');
       setSnackbarOpen(true);
     }
-  };
+  }, [fetchImages]);
 
-  const handleProcessImages = async (type) => {
+  const handleUpdateMetaDataImages = useCallback(async () => {
+    try {
+      await fetch(`${process.env.REACT_APP_API_URL}/update-metadata`, {
+        method: 'POST'
+      });
+      setSnackbarMessage(`Metadata updated successfully`);
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error('Error updating metadata:', error);
+      setSnackbarMessage('Failed to update metadata for images');
+      setSnackbarOpen(true);
+    }
+  }, []);
+
+  const handleUploadToAdobe = useCallback(async () => {
+    try {
+      await fetch(`${process.env.REACT_APP_API_URL}/upload-to-adobe`, {
+        method: 'POST'
+      });
+      setSnackbarMessage(`Uploading successfully to Adobe`);
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error('Error Uploading to Adobe:', error);
+      setSnackbarMessage('Failed to Upload to Adobe');
+      setSnackbarOpen(true);
+    }
+  }, []);
+
+  const handleProcessImages = useCallback(async (type) => {
     const filesToProcess = images.filter(img => img.selected).map(img => img.filename);
     if (filesToProcess.length === 0) {
       setSnackbarMessage('No images selected for processing');
@@ -180,16 +212,16 @@ function StockImageProcessor() {
       setSnackbarMessage(error.message || 'An error occurred while processing images');
     }
     setSnackbarOpen(true);
-  };
+  }, [images]);
 
-  const handleSnackbarClose = (event, reason) => {
+  const handleSnackbarClose = useCallback((event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
     setSnackbarOpen(false);
-  };
+  }, []);
 
-  const handleDownloadCsv = async () => {
+  const handleDownloadCsv = useCallback(async () => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/download-csv`);
       const blob = await response.blob();
@@ -205,9 +237,9 @@ function StockImageProcessor() {
       setSnackbarMessage('Failed to download CSV');
       setSnackbarOpen(true);
     }
-  };
+  }, []);
 
-  const handleRegenerateField = async (field, filename) => {
+  const handleRegenerateField = useCallback(async (field, filename) => {
     setProcessingImages(prev => ({ ...prev, [filename]: field.toUpperCase() }));
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/regenerate/${field}/${filename}`, {
@@ -221,7 +253,7 @@ function StockImageProcessor() {
       const result = await response.json();
       setSnackbarMessage(result.message);
       setSnackbarOpen(true);
-      await fetchImages(); // Refresh the image list
+      await fetchImages();
     } catch (error) {
       console.error(`Error regenerating ${field}:`, error);
       setSnackbarMessage(`Failed to regenerate ${field}`);
@@ -233,21 +265,20 @@ function StockImageProcessor() {
         return newProcessingImages;
       });
     }
-  };
-  
+  }, [fetchImages]);
 
-  const handleSelectImage = (filename, isSelected) => {
+  const handleSelectImage = useCallback((filename, isSelected) => {
     setImages(prevImages => prevImages.map(img => 
       img.filename === filename ? { ...img, selected: isSelected } : img
     ));
-  };
+  }, []);
 
-  const handleSelectAll = (isSelected) => {
+  const handleSelectAll = useCallback((isSelected) => {
     setImages(prevImages => prevImages.map(img => ({ ...img, selected: isSelected })));
-  };
+  }, []);
 
   return (
-    <div className="landing-page">
+    <div key={componentKey} className="landing-page">
       <Header />
 
       <main>
@@ -265,7 +296,7 @@ function StockImageProcessor() {
               onSelectImage={handleSelectImage}
               onSelectAll={handleSelectAll}
               onProcessImage={handleProcessImage}
-              processingImages={processingImages}  // Add this line
+              processingImages={processingImages}
             />
             </Paper>
             <Box display="flex" gap={2} marginBottom="1rem" width="100%" maxWidth="1400px" justifyContent="space-between">
@@ -274,10 +305,10 @@ function StockImageProcessor() {
                 <input type="file" hidden multiple onChange={handleFileUpload} />
               </label>
               <button onClick={() => handleProcessImages("ALL")} 
-                disabled={Object.keys(processingImages).length > 0 || images.filter(img => img.selected).length === 0}
+                disabled={!isConnected || Object.keys(processingImages).length > 0 || images.filter(img => img.selected).length === 0}
                 className="sign-up"
                 style={{
-                  backgroundColor: Object.keys(processingImages).length > 0 ? '#ccc' : '#4a6cf7',
+                  backgroundColor: (!isConnected || Object.keys(processingImages).length > 0 || images.filter(img => img.selected).length === 0) ? '#ccc' : '#4a6cf7',
                   padding: '0.3rem 0.6rem',
                   fontSize: '0.8rem'
                 }}
@@ -285,10 +316,10 @@ function StockImageProcessor() {
                 Process Images
               </button>
               <button onClick={() => handleProcessImages("TITLE")} 
-                disabled={Object.keys(processingImages).length > 0 || images.filter(img => img.selected).length === 0}
+                disabled={!isConnected || Object.keys(processingImages).length > 0 || images.filter(img => img.selected).length === 0}
                 className="sign-up"
                 style={{
-                  backgroundColor: Object.keys(processingImages).length > 0 ? '#ccc' : '#4a6cf7',
+                  backgroundColor: (!isConnected || Object.keys(processingImages).length > 0 || images.filter(img => img.selected).length === 0) ? '#ccc' : '#4a6cf7',
                   padding: '0.3rem 0.6rem',
                   fontSize: '0.8rem'
                 }}
@@ -296,33 +327,55 @@ function StockImageProcessor() {
                 Process Titles
               </button>
               <button onClick={() => handleProcessImages("KEYWORDS")} 
-                disabled={Object.keys(processingImages).length > 0 || images.filter(img => img.selected).length === 0}
+                disabled={!isConnected || Object.keys(processingImages).length > 0 || images.filter(img => img.selected).length === 0}
                 className="sign-up"
                 style={{
-                  backgroundColor: Object.keys(processingImages).length > 0 ? '#ccc' : '#4a6cf7',
+                  backgroundColor: (!isConnected || Object.keys(processingImages).length > 0 || images.filter(img => img.selected).length === 0) ? '#ccc' : '#4a6cf7',
                   padding: '0.3rem 0.6rem',
                   fontSize: '0.8rem'
                 }}
               >
                 Process Keywords
               </button>
-              <button onClick={()=> handleProcessImages("CATEGORY")} 
-                disabled={Object.keys(processingImages).length > 0 || images.filter(img => img.selected).length === 0}
+              <button onClick={() => handleProcessImages("CATEGORY")} 
+                disabled={!isConnected || Object.keys(processingImages).length > 0 || images.filter(img => img.selected).length === 0}
                 className="sign-up"
                 style={{
-                  backgroundColor: Object.keys(processingImages).length > 0 ? '#ccc' : '#4a6cf7',
+                  backgroundColor: (!isConnected || Object.keys(processingImages).length > 0 || images.filter(img => img.selected).length === 0) ? '#ccc' : '#4a6cf7',
                   padding: '0.3rem 0.6rem',
                   fontSize: '0.8rem'
                 }}
               >
                 Process Categories
               </button>
-              <button 
-                onClick={handleDownloadCsv} 
-                disabled={!csvDownloadEnabled}
+              <button onClick={handleUpdateMetaDataImages} 
+                disabled={!isConnected || !csvDownloadEnabled}
                 className="sign-up"
                 style={{
-                  backgroundColor: csvDownloadEnabled ? '#36415d' : '#ccc',
+                  backgroundColor: (!isConnected || !csvDownloadEnabled) ? '#ccc' : '#36415d',
+                  padding: '0.3rem 0.6rem',
+                  fontSize: '0.8rem'
+                }}
+              >
+                Update MetaData
+              </button>
+              <button onClick={handleUploadToAdobe} 
+                disabled={!isConnected || Object.keys(processingImages).length > 0}
+                className="sign-up"
+                style={{
+                  backgroundColor: (!isConnected || Object.keys(processingImages).length > 0) ? '#ccc' : '#36415d',
+                  padding: '0.3rem 0.6rem',
+                  fontSize: '0.8rem'
+                }}
+              >
+                Upload To Adobe
+              </button>
+              <button 
+                onClick={handleDownloadCsv} 
+                disabled={!isConnected || !csvDownloadEnabled}
+                className="sign-up"
+                style={{
+                  backgroundColor: (!isConnected || !csvDownloadEnabled) ? '#ccc' : '#36415d',
                   padding: '0.3rem 0.6rem',
                   fontSize: '0.8rem'
                 }}
@@ -333,6 +386,22 @@ function StockImageProcessor() {
           </Box>
         </section>
       </main>
+
+      {!isConnected && (
+        <div className="alert alert-warning" role="alert" style={{ 
+          position: 'fixed', 
+          top: 0, 
+          left: 0, 
+          right: 0, 
+          zIndex: 1000, 
+          textAlign: 'center', 
+          padding: '10px',
+          backgroundColor: 'red',
+          color:'white'
+        }}>
+          Connection to server lost. Attempting to reconnect...
+        </div>
+      )}
 
       <Snackbar
         open={snackbarOpen}

@@ -17,3 +17,8 @@ cryptography
 bcrypt  # For password hashing
 sse_starlette
 openai
+piexif
+paramiko
+re
+yake
+shutil

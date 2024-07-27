@@ -23,6 +23,13 @@ import base64
 from logging.handlers import RotatingFileHandler
 from openai import AsyncOpenAI
 from ollama import AsyncClient
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# hostname = os.getenv('HOSTNAME')
+# username = os.getenv('USERNAME')
+# password = os.getenv('PASSWORD')
 
 # Set up a rotating file handler
 file_handler = RotatingFileHandler('app.log', maxBytes=5000000, backupCount=5)
@@ -127,6 +134,56 @@ def create_thumbnail(image, size=(100, 100)):
     image.save(buffered, format="PNG")
     return base64.b64encode(buffered.getvalue()).decode()
 
+# @app.post("/upload")
+# async def upload_images(files: list[UploadFile] = File(...)):
+#     if len(files) > 1000:
+#         raise HTTPException(status_code=400, detail="Maximum 1000 images allowed")
+    
+#     # Clear the database and the upload directories
+#     db = get_database()
+#     await db.images.delete_many({})
+#     for directory in [ORIGINALS_DIR, RESIZED_DIR, THUMBNAIL_DIR]:
+#         if os.path.exists(directory):
+#             shutil.rmtree(directory)
+#         os.makedirs(directory)
+    
+#     file_names = []
+#     for file in files:
+#         original_path = os.path.join(ORIGINALS_DIR, file.filename)
+#         resized_path = os.path.join(RESIZED_DIR, file.filename)
+        
+#         # Save the original file
+#         content = await file.read()
+        
+#         with open(original_path, "wb") as buffer:
+#             buffer.write(content)
+        
+#         # Extract original title
+#         original_title = get_image_title(original_path)
+#         cleaned_original_title = Util.clean_prompt(original_title)
+
+#         # Resize and save the image
+#         with Image.open(io.BytesIO(content)) as img:
+#             # Resize the image
+#             resized_img = resize_image(img)
+            
+#             # Save the resized image without original metadata
+#             resized_img.save(resized_path)
+            
+#             # Create thumbnail
+#             thumbnail = create_thumbnail(resized_img)
+        
+#         file_names.append(file.filename)
+#         # Add entry to database with initial status, thumbnail, and original title
+#         await db.images.insert_one({
+#             "filename": file.filename, 
+#             "status": "not processed",
+#             "thumbnail": thumbnail,
+#             "original_title": cleaned_original_title
+#         })
+    
+#     return {"message": f"{len(files)} images uploaded successfully", "file_names": file_names}
+
 @app.post("/upload")
 async def upload_images(files: list[UploadFile] = File(...)):
     if len(files) > 1000:
@@ -146,17 +203,15 @@ async def upload_images(files: list[UploadFile] = File(...)):
         resized_path = os.path.join(RESIZED_DIR, file.filename)
         
         # Save the original file
-        content = await file.read()
-        
         with open(original_path, "wb") as buffer:
-            buffer.write(content)
+            shutil.copyfileobj(file.file, buffer)
         
         # Extract original title
         original_title = get_image_title(original_path)
         cleaned_original_title = Util.clean_prompt(original_title)
-
+        
         # Resize and save the image
-        with Image.open(io.BytesIO(content)) as img:
+        with Image.open(original_path) as img:
             # Resize the image
             resized_img = resize_image(img)
             
@@ -342,6 +397,27 @@ async def download_csv():
             })
     
     return FileResponse(csv_file_path, filename="output_data.csv")
+
+@app.post("/update-metadata")
+async def updateMetaData():
+    db = get_database()
+    images = await db.images.find({"status": "processed"}).to_list(1000)
+    for img in images:
+        Util.updateImageMetadata(img,ORIGINALS_DIR)
+
+@app.post("/upload-to-adobe")
+async def updateMetaData():        
+    # Get the destination directory from .env file
+    dest_base_dir = os.getenv('DESTINATION_DIR')
+    
+    Util.remove_all_directories(dest_base_dir)
+    
+    folderList = Util.divide_files_into_folders()
+    Util.upload_files_sftp(folderList)
+    # db = get_database()
+    # images = await db.images.find({"status": "processed"}).to_list(1000)
+    # for img in images:
+    #     Util.updateImageMetadata(img,ORIGINALS_DIR)
 
 @app.post("/regenerate/{field}/{filename}")
 async def regenerate_field(field: str, filename: str):

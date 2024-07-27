@@ -1,3 +1,9 @@
+button:disabled {
+    background-color: light-dark(rgb(27 27 27 / 30%), rgba(19, 1, 1, 0.3)) !important;
+    color: rgb(0 0 0 / 32%) !important;
+    border-color: light-dark(rgb(128 128 128), rgba(195, 195, 195, 0.3)) !important;
+}
+
 .processorTitle {
     padding: 0.5rem 1rem 0rem;
     margin: 5.3rem 0rem 0rem;

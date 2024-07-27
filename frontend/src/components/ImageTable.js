@@ -11,12 +11,29 @@ import TextFieldWithRegenerate from './TextFieldWithRegenerate';
 
 const getCategoryName = (categoryNumber) => {
   const categories = {
-    1: "People", 2: "Nature", 3: "Animals", 4: "Food & Drink", 5: "Architecture",
-    6: "Travel", 7: "Technology", 8: "Business", 9: "Sports", 10: "Health & Wellness",
-    11: "Education", 12: "Fashion", 13: "Art & Design", 14: "Music", 15: "Lifestyle",
-    16: "Transportation", 17: "Science", 18: "Industry", 19: "Holidays & Celebrations",
-    20: "Abstract", 21: "Other"
-  };
+      1: "Animals",
+      2: "Buildings and Architecture",
+      3: "Business",
+      4: "Drinks",
+      5: "The Environment",
+      6: "States of Mind",
+      7: "Food",
+      8: "Graphic Resources",
+      9: "Hobbies and Leisure",
+      10: "Industry",
+      11: "Landscapes",
+      12: "Lifestyle",
+      13: "People",
+      14: "Plants and Flowers",
+      15: "Culture and Religion",
+      16: "Science",
+      17: "Social Issues",
+      18: "Sports",
+      19: "Technology",
+      20: "Transport",
+      21: "Travel"
+  }
+  
   return categories[categoryNumber] || "Unknown";
 };
 

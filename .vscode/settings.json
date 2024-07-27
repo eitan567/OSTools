@@ -1,3 +1,14 @@
 {
-    "CodeGPT.apiKey": "CodeGPT Plus Beta"
+    "CodeGPT.apiKey": "CodeGPT Plus Beta",
+    "CodeGPT.Autocomplete.provider": "Ollama - starcoder2",
+    "CodeGPT.Autocomplete.enabled": true,
+    "terminal.integrated.profiles.windows": {
+        "custom-bash": {
+            "path": "C:\\PROGRA~1\\Git\\bin\\bash.exe",
+            "args": [
+                "--cd=${workspaceFolder}"
+            ]
+        }
+    },
+    "terminal.integrated.defaultProfile.windows": "custom-bash",
 }

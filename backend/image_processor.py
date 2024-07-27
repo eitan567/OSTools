@@ -101,20 +101,11 @@ async def get_title(client, file_path, original_title):
 
 @retry()
 async def get_category(client, file_path, original_title):
-    categories = {
-        1: "People", 2: "Nature", 3: "Animals", 4: "Food & Drink", 5: "Architecture",
-        6: "Travel", 7: "Technology", 8: "Business", 9: "Sports", 10: "Health & Wellness",
-        11: "Education", 12: "Fashion", 13: "Art & Design", 14: "Music", 15: "Lifestyle",
-        16: "Transportation", 17: "Science", 18: "Industry", 19: "Holidays & Celebrations",
-        20: "Abstract", 21: "Other"
-    }
-
-    category_prompt = f"""Select for this context text: '{original_title}' the most accurate and appropriate category from the following list of category names:                            
-                            1: "People", 2: "Nature", 3: "Animals", 4: "Food & Drink", 5: "Architecture",
-                            6: "Travel", 7: "Technology", 8: "Business", 9: "Sports", 10: "Health & Wellness",
-                            11: "Education", 12: "Fashion", 13: "Art & Design", 14: "Music", 15: "Lifestyle",
-                            16: "Transportation", 17: "Science", 18: "Industry", 19: "Holidays & Celebrations",
-                            20: "Abstract", 21: "Other".
+    category_prompt = f"""Select for this context text: '{original_title}' the most accurate and appropriate category from the following list of category names:
+                            1: "Animals", 2: "Buildings and Architecture", 3: "Business", 4: "Drinks", 5: "The Environment",
+                            6: "States of Mind", 7: "Food", 8: "Graphic Resources", 9: "Hobbies and Leisure", 10: "Industry",
+                            11: "Landscapes", 12: "Lifestyle", 13: "People", 14: "Plants and Flowers", 15: "Culture and Religion",
+                            16: "Science", 17: "Social Issues", 18: "Sports", 19: "Technology", 20: "Transport", 21: "Travel".
                             Provide the category number. Respond using JSON.
                             Response format: {{"Category": 13}}"""
 
@@ -152,7 +143,7 @@ async def get_keywords(client, file_path, original_title):
 
     while len(unique_keywords) < 30 and retry_count < 5:
         response = await client.generate(
-            model="gemma2",
+            model="llama3.1",
             prompt=f"{keywords_prompt}\nResponse format: {{\"Keywords\": [\"keyword1\", \"keyword2\", ...]}}",
             # images=[file_path],
             format="json",
@@ -202,6 +193,7 @@ async def process_image(file_path, image_data, type):
     
     client = AsyncClient()  # Create a single client instance
     original_title = image_data.get("original_title", "")
+    title = image_data.get("title", "")
 
     try:
         with Image.open(file_path) as img:
@@ -227,7 +219,7 @@ async def process_image(file_path, image_data, type):
             
             return title[0]
         case "CATEGORY":
-            category_task = get_category(client, file_path, original_title)
+            category_task = get_category(client, file_path, title)
             category = await asyncio.gather(category_task)
             
             logger.info(f"Category: {category}")
@@ -237,9 +229,9 @@ async def process_image(file_path, image_data, type):
             retry_count=0
             unique_keywords.clear()
             
-            keywords_task = get_keywords(client, file_path, original_title)
+            keywords_task = get_keywords(client, file_path, title)
             keywords = await asyncio.gather(keywords_task)
-            yakeKeywords = Util.getYakeKeywords(original_title)   
+            yakeKeywords = Util.getYakeKeywords(title)   
             mergedKeywords = Util.mergeKeywordLists(yakeKeywords,keywords[0])[:49]
             logger.info(f"Keywords: {mergedKeywords}")
             
@@ -249,21 +241,20 @@ async def process_image(file_path, image_data, type):
             unique_keywords.clear()
 
             title_task = get_title(client, file_path, original_title)
-            category_task = get_category(client, file_path, original_title)
-            keywords_task = get_keywords(client, file_path, original_title)            
-            
-            title, category, keywords = await asyncio.gather(
-                title_task, category_task, keywords_task
-            )
+            title = await asyncio.gather(title_task)
+            category_task = get_category(client, file_path, title[0])            
+            category = await asyncio.gather(category_task)
+            keywords_task = get_keywords(client, file_path, title[0])            
+            keywords = await asyncio.gather(keywords_task)
 
-            yakeKeywords = Util.getYakeKeywords(original_title)   
-            mergedKeywords = Util.mergeKeywordLists(yakeKeywords,keywords)[:49]
+            yakeKeywords = Util.getYakeKeywords(title)   
+            mergedKeywords = Util.mergeKeywordLists(yakeKeywords,keywords[0])[:49]
 
-            logger.info(f"Title: {title}")
-            logger.info(f"Category: {category}")
+            logger.info(f"Title: {title[0]}")
+            logger.info(f"Category: {category[0]}")
             logger.info(f"Keywords: {', '.join(mergedKeywords) if isinstance(mergedKeywords, list) else mergedKeywords}")
             
-            return title, ', '.join(keywords), category
+            return title[0], ', '.join(keywords[0]), category[0]
 
 # Usage example
 # async def main():
