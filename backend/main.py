@@ -399,11 +399,13 @@ async def download_csv():
     return FileResponse(csv_file_path, filename="output_data.csv")
 
 @app.post("/update-metadata")
-async def updateMetaData():
+async def updateMetaData(request: ProcessRequest):
     db = get_database()
-    images = await db.images.find({"status": "processed"}).to_list(1000)
-    for img in images:
-        Util.updateImageMetadata(img,ORIGINALS_DIR)
+    for filename in request.file_names:   
+        image_data = await db.images.find_one({"filename": filename,"status": "processed"})         
+        # images = await db.images.find({"status": "processed"}).to_list(1000)
+        # for img in images:
+        Util.updateImageMetadata(image_data,ORIGINALS_DIR)
 
 @app.post("/upload-to-adobe")
 async def updateMetaData():        

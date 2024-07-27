@@ -10,6 +10,8 @@ function StockImageProcessor() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [csvDownloadEnabled, setCsvDownloadEnabled] = useState(false);
+  const [isAllImagesProcessed, setIsAllImagesProcessed] = useState(false);  
+  const [isAllSelectedImagesProcessed, setIsAllSelectedImagesProcessed] = useState(false);
   const [processingImages, setProcessingImages] = useState({});
   const [isConnected, setIsConnected] = useState(true);
   const [componentKey, setComponentKey] = useState(0);
@@ -49,6 +51,12 @@ function StockImageProcessor() {
       setImages(data.map(img => ({ ...img, selected: false })));
       const hasProcessedImages = data.some(img => img.status === 'processed');
       setCsvDownloadEnabled(hasProcessedImages);
+      console.log("fetchImages");
+      
+      const allProcessed = data.every(img => img.status === 'processed');
+      setIsAllImagesProcessed(allProcessed);
+      console.log("allProcessed:",allProcessed)
+
     } catch (error) {
       console.error('Error fetching images:', error);
       setSnackbarMessage('Failed to fetch images');
@@ -95,9 +103,11 @@ function StockImageProcessor() {
   }, [fetchImages, updateImageStatus]);
 
   useEffect(() => {
-    fetchImages();
-    return setupSSE();
-  }, [setupSSE, fetchImages]);
+    const cleanup = setupSSE();
+    return () => {
+      cleanup();
+    };
+  }, [setupSSE]);
 
   const handleProcessImage = useCallback(async (filename) => {
     setProcessingImages(prev => ({ ...prev, [filename]: 'ALL' }));
@@ -149,18 +159,43 @@ function StockImageProcessor() {
   }, [fetchImages]);
 
   const handleUpdateMetaDataImages = useCallback(async () => {
-    try {
-      await fetch(`${process.env.REACT_APP_API_URL}/update-metadata`, {
-        method: 'POST'
-      });
-      setSnackbarMessage(`Metadata updated successfully`);
+    const filesToProcess = images.filter(img => img.selected).map(img => img.filename);
+    if (filesToProcess.length === 0) {
+      setSnackbarMessage('No images selected for processing');
       setSnackbarOpen(true);
-    } catch (error) {
-      console.error('Error updating metadata:', error);
-      setSnackbarMessage('Failed to update metadata for images');
-      setSnackbarOpen(true);
+      return;
     }
-  }, []);
+  
+    setProcessingImages(prev => {
+      const newProcessingImages = { ...prev };
+      filesToProcess.forEach(filename => {
+        newProcessingImages[filename] = "ALL";
+      });
+      return newProcessingImages;
+    });
+  
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/update-metadata`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ file_names: filesToProcess, type: "ALL"}),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const result = await response.json();
+      setSnackbarMessage(result.message);
+      await fetchImages();
+    } catch (error) {
+      console.error('Error processing images:', error);
+      setSnackbarMessage(error.message || 'An error occurred while processing images');
+    }
+    setSnackbarOpen(true);
+  }, [images, fetchImages]);
 
   const handleUploadToAdobe = useCallback(async () => {
     try {
@@ -169,12 +204,13 @@ function StockImageProcessor() {
       });
       setSnackbarMessage(`Uploading successfully to Adobe`);
       setSnackbarOpen(true);
+      await fetchImages();
     } catch (error) {
       console.error('Error Uploading to Adobe:', error);
       setSnackbarMessage('Failed to Upload to Adobe');
       setSnackbarOpen(true);
     }
-  }, []);
+  }, [fetchImages]);
 
   const handleProcessImages = useCallback(async (type) => {
     const filesToProcess = images.filter(img => img.selected).map(img => img.filename);
@@ -207,12 +243,13 @@ function StockImageProcessor() {
   
       const result = await response.json();
       setSnackbarMessage(result.message);
+      await fetchImages();
     } catch (error) {
       console.error('Error processing images:', error);
       setSnackbarMessage(error.message || 'An error occurred while processing images');
     }
     setSnackbarOpen(true);
-  }, [images]);
+  }, [images, fetchImages]);
 
   const handleSnackbarClose = useCallback((event, reason) => {
     if (reason === 'clickaway') {
@@ -268,13 +305,27 @@ function StockImageProcessor() {
   }, [fetchImages]);
 
   const handleSelectImage = useCallback((filename, isSelected) => {
-    setImages(prevImages => prevImages.map(img => 
-      img.filename === filename ? { ...img, selected: isSelected } : img
-    ));
+    setImages(prevImages => {
+      const newImages = prevImages.map(img => 
+        img.filename === filename ? { ...img, selected: isSelected } : img
+      );
+      
+      const allSelectedProcessed = newImages.filter(img => img.selected).every(img => img.status === 'processed');
+      setIsAllSelectedImagesProcessed(allSelectedProcessed);
+      console.log("handleSelectImage - allSelectedProcessed:",allSelectedProcessed)
+
+      return newImages;
+    });
   }, []);
 
   const handleSelectAll = useCallback((isSelected) => {
-    setImages(prevImages => prevImages.map(img => ({ ...img, selected: isSelected })));
+    setImages(prevImages => {
+      const newImages = prevImages.map(img => ({ ...img, selected: isSelected }));
+      const allSelectedProcessed = newImages.filter(img => img.selected).length>0 && newImages.filter(img => img.selected).every(img => img.status === 'processed');      
+      setIsAllSelectedImagesProcessed(allSelectedProcessed);
+      console.log("handleSelectAll - allSelectedProcessed:",allSelectedProcessed)      
+      return newImages;
+    });
   }, []);
 
   return (
@@ -349,10 +400,10 @@ function StockImageProcessor() {
                 Process Categories
               </button>
               <button onClick={handleUpdateMetaDataImages} 
-                disabled={!isConnected || !csvDownloadEnabled}
+                disabled={!isConnected || !isAllSelectedImagesProcessed}
                 className="sign-up"
                 style={{
-                  backgroundColor: (!isConnected || !csvDownloadEnabled) ? '#ccc' : '#36415d',
+                  backgroundColor: (!isConnected || !isAllSelectedImagesProcessed) ? '#ccc' : '#36415d',
                   padding: '0.3rem 0.6rem',
                   fontSize: '0.8rem'
                 }}
@@ -360,10 +411,10 @@ function StockImageProcessor() {
                 Update MetaData
               </button>
               <button onClick={handleUploadToAdobe} 
-                disabled={!isConnected || Object.keys(processingImages).length > 0}
+                disabled={!isConnected || !isAllImagesProcessed}
                 className="sign-up"
                 style={{
-                  backgroundColor: (!isConnected || Object.keys(processingImages).length > 0) ? '#ccc' : '#36415d',
+                  backgroundColor: (!isConnected || !isAllImagesProcessed) ? '#ccc' : '#36415d',
                   padding: '0.3rem 0.6rem',
                   fontSize: '0.8rem'
                 }}
