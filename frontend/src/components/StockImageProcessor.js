@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Snackbar, Box, Paper } from '@mui/material';
+import { Snackbar, Box, Paper, FormGroup, FormControlLabel, Checkbox} from '@mui/material';
+import PhotoSizeSelectSmallIcon from '@mui/icons-material/PhotoSizeSelectSmall';
+import {Badge,Input,Checkbox as NCheckbox} from "@nextui-org/react";
 import ImageTable from './ImageTable';
 import Header from './Header';
 import './LandingPage.css';
@@ -14,10 +16,26 @@ function StockImageProcessor() {
   const [isAllSelectedImagesProcessed, setIsAllSelectedImagesProcessed] = useState(false);
   const [processingImages, setProcessingImages] = useState({});
   const [isConnected, setIsConnected] = useState(true);
+  const [isAllImagesUpscaled, setIsAllImagesUpscaled] = useState(false);  
   const [componentKey, setComponentKey] = useState(0);
   const retryCount = useRef(0);
   const maxRetries = 5;
   const retryInterval = 5000; // 5 seconds
+  const [hasUnprocessedRows, setHasUnprocessedRows] = useState(false);
+  const [unprocessedRowsCount, setUnprocessedRowsCount] = useState(false);
+  const [partiallyProcessedCount, setPartiallyProcessedCount] = useState(false);
+  const [hasPartiallyProcessedRows, setHasPartiallyProcessedRows] = useState(false);
+
+  useEffect(() => {
+    const unprocessedRowsCount = images.filter(img => img.status === 'not processed');
+    // const unUpscaled = images.some(img => img.upscale_status === 'not upscaled');
+    const partiallyProcessedCount = images.filter(img => img.status === 'partially processed');
+    setIsAllImagesUpscaled(false)
+    setUnprocessedRowsCount(unprocessedRowsCount)
+    setPartiallyProcessedCount(partiallyProcessedCount)
+    setHasUnprocessedRows(unprocessedRowsCount.length>0);
+    setHasPartiallyProcessedRows(partiallyProcessedCount.length>0);
+  }, [images]);
 
   const updateImageStatus = useCallback((data) => {
     setImages(prevImages => prevImages.map(img => 
@@ -33,7 +51,7 @@ function StockImageProcessor() {
         : img
     ));
     
-    if (data.status === 'processed' || data.status === 'error') {
+    if (data.status !== 'processing') {
       setProcessingImages(prev => {
         const newProcessingImages = { ...prev };
         if (newProcessingImages[data.filename]) {
@@ -55,8 +73,7 @@ function StockImageProcessor() {
       
       const allProcessed = data.every(img => img.status === 'processed');
       setIsAllImagesProcessed(allProcessed);
-      console.log("allProcessed:",allProcessed)
-
+      console.log("allProcessed:", allProcessed);
     } catch (error) {
       console.error('Error fetching images:', error);
       setSnackbarMessage('Failed to fetch images');
@@ -127,8 +144,12 @@ function StockImageProcessor() {
         delete newProcessingImages[filename];
         return newProcessingImages;
       });
+
+      const allSelectedProcessed = images.filter(img => img.selected).length > 0 && images.filter(img => img.selected).every(img => img.status === 'processed');
+      setIsAllSelectedImagesProcessed(allSelectedProcessed);
+      console.log("handleProcessImage - allSelectedProcessed:", allSelectedProcessed);
     }
-  }, [fetchImages]);
+  }, [images,fetchImages]);
 
   const handleFileUpload = useCallback(async (event) => {
     const files = Array.from(event.target.files);
@@ -157,6 +178,39 @@ function StockImageProcessor() {
       setSnackbarOpen(true);
     }
   }, [fetchImages]);
+
+  
+  const handleUpscalingImages = useCallback(async (upscale_factor,no_validation) => {
+    try {
+      console.log("upscale_factor",upscale_factor)
+      console.log("no_validation",no_validation)
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/upscale-all`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({upscale_factor: upscale_factor,no_validation:no_validation}),
+      });
+
+      const result = await response.json();
+
+      if(result.message.includes('skipped upscaling')){
+        console.error(`result: ${result.message}`);
+        setSnackbarMessage(result.message);
+        setSnackbarOpen(true);
+      }
+      else
+      {
+        console.error(`result: ${result.error}`);
+        setSnackbarMessage(`${result} images uploaded successfully`);
+        setSnackbarOpen(true);
+      }
+    } catch (error) {
+      console.error('Error Upscaling:', error);
+      setSnackbarMessage('Failed to Upscaling Images');
+      setSnackbarOpen(true);
+    }
+  }, []);
 
   const handleUpdateMetaDataImages = useCallback(async () => {
     const filesToProcess = images.filter(img => img.selected).map(img => img.filename);
@@ -188,6 +242,7 @@ function StockImageProcessor() {
       }
   
       const result = await response.json();
+      console.log("handleUpdateMetaDataImages- result: ", result)
       setSnackbarMessage(result.message);
       await fetchImages();
     } catch (error) {
@@ -223,7 +278,7 @@ function StockImageProcessor() {
     setProcessingImages(prev => {
       const newProcessingImages = { ...prev };
       filesToProcess.forEach(filename => {
-        newProcessingImages[filename] = type === "ALL" ? "ALL" : type;
+        newProcessingImages[filename] = type;
       });
       return newProcessingImages;
     });
@@ -249,6 +304,11 @@ function StockImageProcessor() {
       setSnackbarMessage(error.message || 'An error occurred while processing images');
     }
     setSnackbarOpen(true);
+
+    const allSelectedProcessed = images.filter(img => img.selected).length > 0 && images.filter(img => img.selected).every(img => img.status === 'processed');
+    setIsAllSelectedImagesProcessed(allSelectedProcessed);
+    console.log("handleProcessImages - allSelectedProcessed:", allSelectedProcessed);
+
   }, [images, fetchImages]);
 
   const handleSnackbarClose = useCallback((event, reason) => {
@@ -310,9 +370,9 @@ function StockImageProcessor() {
         img.filename === filename ? { ...img, selected: isSelected } : img
       );
       
-      const allSelectedProcessed = newImages.filter(img => img.selected).every(img => img.status === 'processed');
+      const allSelectedProcessed = newImages.filter(img => img.selected).length > 0 && newImages.filter(img => img.selected).every(img => img.status === 'processed');
       setIsAllSelectedImagesProcessed(allSelectedProcessed);
-      console.log("handleSelectImage - allSelectedProcessed:",allSelectedProcessed)
+      console.log("handleSelectImage - allSelectedProcessed:", allSelectedProcessed);
 
       return newImages;
     });
@@ -321,37 +381,156 @@ function StockImageProcessor() {
   const handleSelectAll = useCallback((isSelected) => {
     setImages(prevImages => {
       const newImages = prevImages.map(img => ({ ...img, selected: isSelected }));
-      const allSelectedProcessed = newImages.filter(img => img.selected).length>0 && newImages.filter(img => img.selected).every(img => img.status === 'processed');      
+      const allSelectedProcessed = newImages.filter(img => img.selected).length > 0 && newImages.filter(img => img.selected).every(img => img.status === 'processed');            
       setIsAllSelectedImagesProcessed(allSelectedProcessed);
-      console.log("handleSelectAll - allSelectedProcessed:",allSelectedProcessed)      
+      console.log("handleSelectAll - allSelectedProcessed:", allSelectedProcessed);      
       return newImages;
     });
   }, []);
 
+  const handleSelectUnProcessedRows = useCallback((event) => {
+    const isChecked = event.target.checked;
+    setImages(currentImages => {
+      const updatedImages = currentImages.map(img => ({
+        ...img,
+        selected: img.status === 'not processed' ? isChecked : img.selected
+      }));
+
+      const selectedImages = updatedImages.filter(img => img.selected);
+      const allSelectedProcessed = selectedImages.length > 0 && selectedImages.every(img => img.status === 'processed');
+      setIsAllSelectedImagesProcessed(allSelectedProcessed);
+
+      return updatedImages;
+    });
+  }, []);
+
+  const handleSelectPartialProcessedRows = useCallback((event) => {
+    const isChecked = event.target.checked;
+    setImages(currentImages => {
+      const updatedImages = currentImages.map(img => ({
+        ...img,
+        selected: img.status === 'partially processed' ? isChecked : img.selected
+      }));
+
+      const selectedImages = updatedImages.filter(img => img.selected);
+      const allSelectedProcessed = selectedImages.length > 0 && selectedImages.every(img => img.status === 'processed');
+      setIsAllSelectedImagesProcessed(allSelectedProcessed);
+
+      return updatedImages;
+    });
+  }, []);
+
+  const handleUpdateImage = useCallback(async (imageId, field, value) => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/update-image`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ imageId, field, value }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      setImages(prevImages => 
+        prevImages.map(img => 
+          img.id === imageId ? { ...img, [field]: value } : img
+        )
+      );
+
+      setSnackbarMessage(`Successfully updated ${field} for image`);
+      setSnackbarOpen(true);
+
+      // Refresh images to ensure all data is up to date
+      await fetchImages();
+    } catch (error) {
+      console.error('Error updating image:', error);
+      setSnackbarMessage(`Failed to update ${field} for image`);
+      setSnackbarOpen(true);
+    }
+  }, [fetchImages]);
+  const checkboxRef = useRef(null);
+  const inputRef = useRef(null);
   return (
     <div key={componentKey} className="landing-page">
       <Header />
-
       <main>
         <section className="hero processorTitle">
           <h1>Stock Image Processor</h1>
           <p>Process and manage your stock images with AI-powered tools.</p>
         </section>
-
+  
         <section className="pricing processorTable" style={{ backgroundColor: '#fff' }}>
           <Box display="flex" flexDirection="column" alignItems="center">
-            <Paper style={{ width: '100%', maxWidth: '1400px', marginBottom: '1rem', overflow: 'auto', border: '1px solid #e6e5e5' }}>
-            <ImageTable 
+            <Box display="flex" justifyContent="space-between" width="100%" maxWidth="1400px" marginBottom="0rem" alignItems="center">
+              <FormGroup row style={{height:'38px',flex: "16"}} width="100%">
+                <Badge content={unprocessedRowsCount.length} color="primary" size="sm" placement="top-left" style={{fontSize:"12px",left:"0px",top:"8px"}}>
+                  <FormControlLabel 
+                    control={<Checkbox 
+                      onChange={handleSelectUnProcessedRows} 
+                      disabled={!hasUnprocessedRows} size='small'
+                    />} 
+                    label="Select all Unprocessed rows" 
+                    className='chkLabelCls'
+
+                  />
+                </Badge>
+                <Badge content={partiallyProcessedCount.length} color="primary" size="sm" placement="top-left" style={{fontSize:"12px",left:"0px",top:"8px"}}>
+                  <FormControlLabel 
+                    control={<Checkbox 
+                      onChange={handleSelectPartialProcessedRows} 
+                      disabled={!hasPartiallyProcessedRows} size='small'
+                    />} 
+                    label="Select all Partial Processed rows" 
+                    className='chkLabelCls'
+                  />
+                </Badge>                
+              </FormGroup>              
+                             
+                <NCheckbox defaultSelected size="sm" className="w-full mr-5" style={{flex:'3',marginRight:"5px"}} ref={checkboxRef} >Force Upscale</NCheckbox>  
+                <Input
+                  className="w-28 flex-6 w-xs"
+                  color="default"
+                  variant="bordered"
+                  type="text"
+                  placeholder="UpScale By..."
+                  labelPlacement="outside"
+                  style={{flex:'6',width:"100px"}}
+                  width="50px"
+                  size="sm"
+                  ref={inputRef}
+                  startContent={
+                    <PhotoSizeSelectSmallIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                  }
+                />
+                <button onClick={()=>handleUpscalingImages(inputRef.current.value,checkboxRef.current.checked)} 
+                  disabled={!isConnected || isAllImagesUpscaled}
+                  className="sign-up"
+                  style={{
+                    backgroundColor: (!isConnected || isAllImagesUpscaled) ? '#ccc' : '#36415d',
+                    padding: '0.3rem 0.6rem',
+                    fontSize: '0.8rem',
+                    flex:'2'
+                  }}
+                >
+                  Upscale All
+                </button>             
+            </Box>
+            <Paper style={{ width: '100%', maxWidth: '1400px', overflow: 'auto', border: '1px solid #e6e5e5',marginBottom:'10px' }}>
+              <ImageTable 
               images={images}
               onRegenerateField={handleRegenerateField}
               onSelectImage={handleSelectImage}
               onSelectAll={handleSelectAll}
               onProcessImage={handleProcessImage}
               processingImages={processingImages}
+              onUpdateImage={handleUpdateImage}
             />
             </Paper>
             <Box display="flex" gap={2} marginBottom="1rem" width="100%" maxWidth="1400px" justifyContent="space-between">
-              <label className="sign-up label-button" style={{cursor: 'pointer', padding: '0.3rem 0.6rem', fontSize: '0.8rem'}}>
+              <label className="sign-up label-button" style={{cursor: 'pointer', padding: '0.3rem 0.6rem', fontSize: '0.8rem',marginLeft:'0'}}>
                 Upload Images
                 <input type="file" hidden multiple onChange={handleFileUpload} />
               </label>
@@ -409,7 +588,7 @@ function StockImageProcessor() {
                 }}
               >
                 Update MetaData
-              </button>
+              </button>              
               <button onClick={handleUploadToAdobe} 
                 disabled={!isConnected || !isAllImagesProcessed}
                 className="sign-up"
@@ -428,7 +607,8 @@ function StockImageProcessor() {
                 style={{
                   backgroundColor: (!isConnected || !csvDownloadEnabled) ? '#ccc' : '#36415d',
                   padding: '0.3rem 0.6rem',
-                  fontSize: '0.8rem'
+                  fontSize: '0.8rem',
+                  marginRight:'0'
                 }}
               >
                 Download CSV File

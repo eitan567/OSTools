@@ -17,6 +17,7 @@ import json
 from datetime import datetime
 import socket
 import time
+import sys
 
 class Util:
     @staticmethod
@@ -104,16 +105,19 @@ class Util:
         return merged_list
     
     @staticmethod
-    def updateImageMetadata(img,originalsDirectory):
-        filename = img.get("filename", "")
-        title = img.get("title", "")
-        keywords = img.get("keywords", "")
-        category = img.get("category", "")
-        directory = originalsDirectory + "\\"+  filename
+    async def updateImageMetadata(img,originalsDirectory):
+        # try:
+            filename = img.get("filename", "")
+            title = img.get("title", "")
+            keywords = img.get("keywords", "")
+            category = img.get("category", "")
+            directory = originalsDirectory + "\\"+  filename
 
-        # subprocess.run(['exiftool', '-Keywords=' + keywords + "-overwrite_original", directory])
-        Util.set_exif_metadata(directory, title, keywords, str(category))
-
+            # subprocess.run(['exiftool', '-Keywords=' + keywords + "-overwrite_original", directory])
+            Util.set_exif_metadata(directory, title, keywords, str(category))
+        # except Exception as e:
+        #     print(f"Failed to update Image Metadata: {str(e)}, filename:{filename}")
+        #     return
         # extension = os.path.splitext(filename)[1]
         # match extension:
         #     case ".jpg" | ".jpeg":
@@ -209,7 +213,7 @@ class Util:
             print(e.stderr)
 
     @staticmethod
-    def divide_files_into_folders(num_folders=4, folder_prefix="Account-", source_dir="C:/AllPythonProjects/OSTools/uploaded_images/originals"):
+    def divide_files_into_folders(num_folders=4, folder_prefix="Account", source_dir="C:/AllPythonProjects/OSTools/uploaded_images/originals"):
         # Load environment variables
         load_dotenv()
         
@@ -431,3 +435,19 @@ class Util:
                     if not ignore_errors:
                         raise
         return removed_dirs
+    
+    @staticmethod
+    def upscale_image(input_folder, output_folder, scale_factor):
+        photoai_cli_path = "C:/Program Files/Topaz Labs LLC/Topaz Photo AI/tpai.exe"        
+
+        if not os.path.exists(photoai_cli_path):
+            print("Topaz Photo AI CLI not found. Check the path.")
+            sys.exit(1)
+
+        try:
+            upscaleCommand = f'{photoai_cli_path} {input_folder} --output {output_folder} --upscale scale={scale_factor} model="Low Resolution"'
+            result = subprocess.run(upscaleCommand, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(result.stdout.decode("utf-8"))
+        except subprocess.CalledProcessError as error:
+            print(f"Upscaling failed with error: {error}")
+            print(error.stderr.decode("utf-8"))        

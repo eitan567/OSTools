@@ -139,16 +139,25 @@ async def get_keywords(client, file_path, original_title):
     #                       sort the keywords from the most important and most subject focused.
     #                       IMPORTANT: Don't use conjunction words.
     #                       Respond using JSON."""
-    keywords_prompt=f"""give me 49 most relevant and objective and subject focused keywords for the text "{original_title}" response using Json in the format of: {{Keywords:['keyword1','keyword2','keyword3','keyword4','keyword5'...]}}"""
-
     while len(unique_keywords) < 30 and retry_count < 5:
-        response = await client.generate(
-            model="llama3.1",
-            prompt=f"{keywords_prompt}\nResponse format: {{\"Keywords\": [\"keyword1\", \"keyword2\", ...]}}",
-            # images=[file_path],
-            format="json",
-            stream=False
-        )
+        if original_title=='':
+            keywords_prompt=f"""Give me 49 most relevant ,objective and subject focused unique single-word keywords related only to this image. Response using Json in the format of: {{Keywords:['keyword1','keyword2','keyword3','keyword4','keyword5'...]}}"""
+            response = await client.generate(
+                model="llava:13b",
+                prompt=f"{keywords_prompt}\nResponse format: {{\"Keywords\": [\"keyword1\", \"keyword2\", ...]}}",
+                images=[file_path],
+                format="json",
+                stream=False
+            )
+        else: 
+            keywords_prompt=f"""give me 49 most relevant and objective and subject focused keywords for the text "{original_title}" response using Json in the format of: {{Keywords:['keyword1','keyword2','keyword3','keyword4','keyword5'...]}}"""
+            response = await client.generate(
+                model="llama3.1",
+                prompt=f"{keywords_prompt}\nResponse format: {{\"Keywords\": [\"keyword1\", \"keyword2\", ...]}}",
+                # images=[file_path],
+                format="json",
+                stream=False
+            )
         
         logger.debug(f"Keywords response for {file_path}: {response['response']}")
     
@@ -219,7 +228,7 @@ async def process_image(file_path, image_data, type):
             
             return title[0]
         case "CATEGORY":
-            category_task = get_category(client, file_path, title)
+            category_task = get_category(client, file_path, title if title else original_title)
             category = await asyncio.gather(category_task)
             
             logger.info(f"Category: {category}")
@@ -229,7 +238,7 @@ async def process_image(file_path, image_data, type):
             retry_count=0
             unique_keywords.clear()
             
-            keywords_task = get_keywords(client, file_path, title)
+            keywords_task = get_keywords(client, file_path, title if title!='' else original_title)
             keywords = await asyncio.gather(keywords_task)
             yakeKeywords = Util.getYakeKeywords(title)   
             mergedKeywords = Util.mergeKeywordLists(yakeKeywords,keywords[0])[:49]

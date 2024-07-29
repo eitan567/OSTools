@@ -20,7 +20,7 @@ const Header = ({ onSignInClick, onSignUpClick }) => {
           <a href="/pages">Pages</a>
         </nav>
         <div className="auth-buttons">
-          <button onClick={onSignInClick} className="sign-in">Sign In</button>
+          <button onClick={onSignInClick} className="sign-up">Sign In</button>
           <button onClick={onSignUpClick} className="sign-up">Sign Up</button>
         </div>
       </div>

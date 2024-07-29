@@ -24,12 +24,9 @@ from logging.handlers import RotatingFileHandler
 from openai import AsyncOpenAI
 from ollama import AsyncClient
 from dotenv import load_dotenv
+import subprocess
 
 load_dotenv()
-
-# hostname = os.getenv('HOSTNAME')
-# username = os.getenv('USERNAME')
-# password = os.getenv('PASSWORD')
 
 # Set up a rotating file handler
 file_handler = RotatingFileHandler('app.log', maxBytes=5000000, backupCount=5)
@@ -60,6 +57,7 @@ app.add_middleware(
 
 # Directories to store uploaded images
 UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "uploaded_images")
+UPSCALED_DIR = os.path.join(UPLOAD_DIR, "upscaled")
 ORIGINALS_DIR = os.path.join(UPLOAD_DIR, "originals")
 RESIZED_DIR = os.path.join(UPLOAD_DIR, "resized")
 THUMBNAIL_DIR = os.path.join(UPLOAD_DIR, "thumbnails")
@@ -86,6 +84,10 @@ async def shutdown_db_client():
 class ProcessRequest(BaseModel):
     file_names: List[str]
     type: str
+
+class UpscalingRequest(BaseModel):
+    upscale_factor: float
+    no_validation:bool
 
 async def notify_clients(data: dict):
     event_data = json.dumps(data)
@@ -133,56 +135,6 @@ def create_thumbnail(image, size=(100, 100)):
     buffered = io.BytesIO()
     image.save(buffered, format="PNG")
     return base64.b64encode(buffered.getvalue()).decode()
-
-# @app.post("/upload")
-# async def upload_images(files: list[UploadFile] = File(...)):
-#     if len(files) > 1000:
-#         raise HTTPException(status_code=400, detail="Maximum 1000 images allowed")
-    
-#     # Clear the database and the upload directories
-#     db = get_database()
-#     await db.images.delete_many({})
-#     for directory in [ORIGINALS_DIR, RESIZED_DIR, THUMBNAIL_DIR]:
-#         if os.path.exists(directory):
-#             shutil.rmtree(directory)
-#         os.makedirs(directory)
-    
-#     file_names = []
-#     for file in files:
-#         original_path = os.path.join(ORIGINALS_DIR, file.filename)
-#         resized_path = os.path.join(RESIZED_DIR, file.filename)
-        
-#         # Save the original file
-#         content = await file.read()
-        
-#         with open(original_path, "wb") as buffer:
-#             buffer.write(content)
-        
-#         # Extract original title
-#         original_title = get_image_title(original_path)
-#         cleaned_original_title = Util.clean_prompt(original_title)
-
-#         # Resize and save the image
-#         with Image.open(io.BytesIO(content)) as img:
-#             # Resize the image
-#             resized_img = resize_image(img)
-            
-#             # Save the resized image without original metadata
-#             resized_img.save(resized_path)
-            
-#             # Create thumbnail
-#             thumbnail = create_thumbnail(resized_img)
-        
-#         file_names.append(file.filename)
-#         # Add entry to database with initial status, thumbnail, and original title
-#         await db.images.insert_one({
-#             "filename": file.filename, 
-#             "status": "not processed",
-#             "thumbnail": thumbnail,
-#             "original_title": cleaned_original_title
-#         })
-    
-#     return {"message": f"{len(files)} images uploaded successfully", "file_names": file_names}
 
 @app.post("/upload")
 async def upload_images(files: list[UploadFile] = File(...)):
@@ -242,43 +194,53 @@ async def get_thumbnail(filename: str):
 
 async def process_image_and_update(file_name, db, type):
     try:
-        title, keywords, category = None, None, None
+        # Notify that processing has started
         await notify_clients({"filename": file_name, "status": "processing"})
 
-        # Get the original title from the database
         image_data = await db.images.find_one({"filename": file_name})
-
-        # Process resized image
         file_path = os.path.join(RESIZED_DIR, file_name)
-        match type:
-            case "TITLE":
-                title = await process_image(file_path, image_data, type)
-            case "CATEGORY":
-                category = await process_image(file_path, image_data, type)
-            case "KEYWORDS":
-                keywords = await process_image(file_path, image_data, type)
-            case "ALL":
-                title, keywords, category = await process_image(file_path, image_data, type)
-            case _:
-                raise ValueError("Invalid type")
-                
-        # Save data to MongoDB instantly
-        await save_image_data(db, file_name, title, keywords, category, type, image_data)
 
-        # Retrieve a specific field value
-        image_data = await db.images.find_one({"filename": file_name})
-        updated_title = image_data.get("title", "")
-        updated_keywords = image_data.get("keywords", [])
-        updated_category = image_data.get("category", "")
+        result = await process_image(file_path, image_data, type)
 
-        isProcessed = updated_title and updated_keywords and updated_category or False   
+        update_data = {}
+        if type == "TITLE":
+            update_data["title"] = result
+        elif type == "KEYWORDS":
+            update_data["keywords"] = result
+        elif type == "CATEGORY":
+            update_data["category"] = result
+        elif type == "ALL":
+            title, keywords, category = result
+            update_data = {"title": title, "keywords": keywords, "category": category}
 
+        # Update the database with the new data
+        await db.images.update_one({"filename": file_name}, {"$set": update_data})
+
+        # Fetch the updated image data
+        updated_image = await db.images.find_one({"filename": file_name})
+
+        # Check if all fields are processed
+        all_fields_present = all([
+            updated_image.get('title'),
+            updated_image.get('keywords'),
+            updated_image.get('category')
+        ])
+
+        # Set status based on processed fields
+        if all_fields_present:
+            status = "processed"
+        elif any([updated_image.get('title'), updated_image.get('keywords'), updated_image.get('category')]):
+            status = "partially processed"
+        else:
+            status = "not processed"
+
+        await db.images.update_one({"filename": file_name}, {"$set": {"status": status}})
+        updated_image['status'] = status
+
+        # Notify clients with the updated data
         await notify_clients({
             "filename": file_name,
-            "status": (isProcessed and "processed") or "not processed",
-            "title": updated_title,
-            "keywords": updated_keywords,
-            "category": updated_category
+            **{k: v for k, v in updated_image.items() if k != "_id" and k != "thumbnail"}
         })
 
     except Exception as e:
@@ -312,7 +274,7 @@ async def process_images(request: ProcessRequest):
             continue
         
         # Process images synchronously
-        await process_image_and_update(file_name, db ,request.type)
+        await process_image_and_update(file_name, db, request.type)
     
     return {"message": f"Processing of {len(request.file_names)} images completed"}
 
@@ -338,7 +300,7 @@ async def process_single_image(filename: str):
         image_data = await db.images.find_one({"filename": filename})
                
         # Process the image
-        title, keywords, category = await process_image(file_path, image_data ,"ALL")
+        title, keywords, category = await process_image(file_path, image_data, "ALL")
        
         # Save the processed data
         await save_image_data(db, filename, title, keywords, category, "ALL", image_data)
@@ -390,7 +352,6 @@ async def download_csv():
         for img in images:
             writer.writerow({
                 'Filename': img['filename'],
-                # 'Original Title': img.get('original_title', ''),
                 'Title': img['title'],
                 'Keywords': img['keywords'],
                 'Category': img['category']
@@ -399,27 +360,115 @@ async def download_csv():
     return FileResponse(csv_file_path, filename="output_data.csv")
 
 @app.post("/update-metadata")
-async def updateMetaData(request: ProcessRequest):
+async def updateMetaData(request: ProcessRequest):    
+    # Notify that processing has started
     db = get_database()
-    for filename in request.file_names:   
-        image_data = await db.images.find_one({"filename": filename,"status": "processed"})         
-        # images = await db.images.find({"status": "processed"}).to_list(1000)
-        # for img in images:
-        Util.updateImageMetadata(image_data,ORIGINALS_DIR)
+    for filename in request.file_names:
+        file_path = os.path.join(ORIGINALS_DIR, filename)
+        if not os.path.exists(file_path):           
+            await notify_clients({
+                "filename": filename,
+                "status": "error",
+                "error": "File not found"
+            })
+            continue
+        
+        await notify_clients({"filename": filename, "status": "processing"})
+
+        image_data = await db.images.find_one({"filename": filename, "status": "processed"})  
+               
+        await updateSingleMetaData(filename,image_data)    
+       
+    return {"message": f"Updating MetaData of {len(request.file_names)} images completed"}
+
+async def updateSingleMetaData(filename,image_data):
+    try:
+        await Util.updateImageMetadata(image_data, ORIGINALS_DIR)
+        
+        # Notify clients with the updated data        
+        await notify_clients({
+            "filename": filename,
+            "status": "processed"
+        })
+
+    except Exception as e:
+        logger.exception(f"Error processing {filename}: {str(e)}")
+        error_message = str(e)
+
+        await notify_clients({
+            "filename": filename,
+            "status": "error",
+            "error": error_message
+        })
+
+
+class UpdateImageRequest(BaseModel):
+    imageId: str
+    field: str
+    value: str
+
+@app.post("/update-image")
+async def update_image(request: UpdateImageRequest):
+    db = get_database()
+    try:
+        image = await db.images.find_one({"_id": ObjectId(request.imageId)})
+        if not image:
+            raise HTTPException(status_code=404, detail="Image not found")
+
+        update_data = {request.field: request.value}
+        
+        # Check if all fields are now processed
+        if request.field in ['title', 'keywords', 'category']:
+            image[request.field] = request.value
+            all_fields_present = all([
+                image.get('title'),
+                image.get('keywords'),
+                image.get('category')
+            ])
+            if all_fields_present:
+                update_data['status'] = 'processed'
+            elif any([image.get('title'), image.get('keywords'), image.get('category')]):
+                update_data['status'] = 'partially processed'
+
+        result = await db.images.update_one(
+            {"_id": ObjectId(request.imageId)},
+            {"$set": update_data}
+        )
+
+        if result.modified_count == 0:
+            raise HTTPException(status_code=400, detail="Image update failed")
+
+        # Notify clients about the update
+        await notify_clients({
+            "filename": image['filename'],
+            "status": update_data.get('status', image['status']),
+            request.field: request.value
+        })
+
+        return {"message": "Image updated successfully"}
+    except Exception as e:
+        logger.error(f"Error updating image: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.post("/upload-to-adobe")
-async def updateMetaData():        
+async def uploadToAdobe():        
     # Get the destination directory from .env file
     dest_base_dir = os.getenv('DESTINATION_DIR')
     
+    # TODO - add notifications for upload process started
+
     Util.remove_all_directories(dest_base_dir)
+
+    # TODO - add notifications for dividing files into folders
     
     folderList = Util.divide_files_into_folders()
-    Util.upload_files_sftp(folderList)
-    # db = get_database()
-    # images = await db.images.find({"status": "processed"}).to_list(1000)
-    # for img in images:
-    #     Util.updateImageMetadata(img,ORIGINALS_DIR)
+
+    # TODO - add notifications for uploading files to sftp server
+
+    Util.upload_files_sftp(folderList) #change to the main,js file to add notifications properly 
+
+    return {"message": f"Upload To Adobe ended successfully"}
 
 @app.post("/regenerate/{field}/{filename}")
 async def regenerate_field(field: str, filename: str):
@@ -431,11 +480,11 @@ async def regenerate_field(field: str, filename: str):
     
     try:
         # Get the original title from the database
-        title,keywords,category = None,None,None
+        title, keywords, category = None, None, None
         image_data = await db.images.find_one({"filename": filename})
         
         if field == "title":
-            title = await process_image(file_path, image_data,type="TITLE")
+            title = await process_image(file_path, image_data, type="TITLE")
             await db.images.update_one(
                 {"filename": filename},
                 {"$set": {
@@ -443,7 +492,7 @@ async def regenerate_field(field: str, filename: str):
                     "status": "processed"
                 }})
         elif field == "keywords":
-            keywords = await process_image(file_path, image_data,type="KEYWORDS")
+            keywords = await process_image(file_path, image_data, type="KEYWORDS")
             await db.images.update_one(
                 {"filename": filename},
                 {"$set": {
@@ -451,7 +500,7 @@ async def regenerate_field(field: str, filename: str):
                     "status": "processed"
                 }})
         elif field == "category":
-            category = await process_image(file_path, image_data,type="CATEGORY")
+            category = await process_image(file_path, image_data, type="CATEGORY")
             await db.images.update_one(
                 {"filename": filename},
                 {"$set": {
@@ -472,8 +521,68 @@ async def regenerate_field(field: str, filename: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+def get_first_file(directory_path):
+    # List all files in the directory
+    files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f))]
+    
+    # Sort the files (this can be omitted if you just want the first file in the default order)
+    files.sort()
 
+    # Return the first file, if any
+    return files[0] if files else None
 
+async def isUpscaled():    
+    file_path = os.path.join(ORIGINALS_DIR, get_first_file(ORIGINALS_DIR))
+
+    command = ['exiftool']
+    command.extend(['-s3'])
+    command.extend(['-software'])
+    # Add the file path at the end
+    command.append(file_path)
+    
+    try:
+        result = subprocess.run(command, check=True, capture_output=True, text=True)
+        # Ensure the stdout is a string before checking for substring
+        stdout_content = result.stdout
+        if "Topaz Photo AI" in stdout_content:
+            return True
+        else:
+            return False
+    except subprocess.CalledProcessError as e:
+        print("Error updating metadata:")
+        print(e.stderr)
+
+    return False
+
+@app.post("/upscale-all")
+async def upscale_by(request: UpscalingRequest):          
+    if not request.no_validation:
+        if await isUpscaled():            
+            return {"message": "skipped upscaling - files are already upscaled by topaz photo AI !"}
+    else:
+        upscaling_by = 0
+        if not request.upscale_factor:
+            upscaling_by = os.getenv("UPSCALE_BY")
+        else:
+            upscaling_by = request.upscale_factor
+
+        try:         
+            await notify_clients({"status": "upscaling"})
+
+            await asyncio.gather(*[
+                asyncio.create_task(Util.upscale_image(ORIGINALS_DIR, UPSCALED_DIR, upscaling_by))               
+            ])
+        except Exception as e:
+            logger.exception(f"Error Upscaling: {str(e)}")
+            error_message = str(e)
+
+            await notify_clients({            
+                "status": "error",
+                "error": error_message
+            })
+
+        return {"message": "Upscaling of all images completed"}
+        
 if __name__ == "__main__":    
     response = client.generate(
         model="phi3",       
