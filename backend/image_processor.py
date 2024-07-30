@@ -44,17 +44,17 @@ def retry(max_retries=MAX_RETRIES, delay=RETRY_DELAY):
         return wrapper
     return decorator
 
-def extract_json(text):
-    """Extract JSON from text, even if it's not properly formatted."""
-    try:
-        match = re.search(r'\{.*\}', text, re.DOTALL)
-        if match:
-            return json.loads(match.group())
-    except json.JSONDecodeError as e:
-        logger.error(f"JSON decode error: {str(e)}")
-    except Exception as e:
-        logger.error(f"Unexpected error in extract_json: {str(e)}")
-    return None
+# def extract_json(text):
+#     """Extract JSON from text, even if it's not properly formatted."""
+#     try:
+#         match = re.search(r'\{.*\}', text, re.DOTALL)
+#         if match:
+#             return json.loads(match.group())
+#     except json.JSONDecodeError as e:
+#         logger.error(f"JSON decode error: {str(e)}")
+#     except Exception as e:
+#         logger.error(f"Unexpected error in extract_json: {str(e)}")
+#     return None
 
 def get_image_title(file_path):
     try:
@@ -93,7 +93,7 @@ async def get_title(client, file_path, original_title):
     
     logger.debug(f"Title response: {response['response']}")
     
-    data = extract_json(response['response'])
+    data = Util.extract_json(response['response'])
     if data and 'Title' in data:
         return data['Title']
     else:
@@ -117,7 +117,7 @@ async def get_category(client, file_path, original_title):
 
     logger.debug(f"Category response: {response['response']}")
 
-    data = extract_json(response['response'])
+    data = Util.extract_json(response['response'])
     if data and 'Category' in data:
         return data['Category']
     else:
@@ -161,7 +161,7 @@ async def get_keywords(client, file_path, original_title):
         
         logger.debug(f"Keywords response for {file_path}: {response['response']}")
     
-        data = extract_json(response['response'])
+        data = Util.extract_json(response['response'])
         if data and 'Keywords' in data:
             new_keywords = set(keyword.lower() for keyword in data['Keywords'] if len(keyword.split(" ")) < 3)
             unique_keywords.update(new_keywords)

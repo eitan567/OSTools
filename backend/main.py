@@ -376,15 +376,19 @@ async def updateMetaData(request: ProcessRequest):
         await notify_clients({"filename": filename, "status": "processing"})
 
         image_data = await db.images.find_one({"filename": filename, "status": "processed"})  
-               
-        await updateSingleMetaData(filename,image_data)    
+
+        isUpscaled =  await isUpscaled()
+        await updateSingleMetaData(filename,image_data,isUpscaled)    
        
     return {"message": f"Updating MetaData of {len(request.file_names)} images completed"}
 
-async def updateSingleMetaData(filename,image_data):
-    try:
-        await Util.updateImageMetadata(image_data, ORIGINALS_DIR)
-        
+async def updateSingleMetaData(filename,image_data,isUpscaled):
+    try:        
+        if isUpscaled:
+            await Util.updateImageMetadata(image_data, UPSCALED_DIR)
+        else:
+            await Util.updateImageMetadata(image_data, ORIGINALS_DIR)
+
         # Notify clients with the updated data        
         await notify_clients({
             "filename": filename,
@@ -455,6 +459,12 @@ async def update_image(request: UpdateImageRequest):
 async def uploadToAdobe():        
     # Get the destination directory from .env file
     dest_base_dir = os.getenv('DESTINATION_DIR')
+    UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "uploaded_images")
+    UPSCALED_DIR = os.path.join(UPLOAD_DIR, "upscaled")
+    ORIGINALS_DIR = os.path.join(UPLOAD_DIR, "originals")
+
+    request = UpscalingRequest(upscale_factor=4.0, no_validation=False)
+    result = await upscale_by(request)
     
     # TODO - add notifications for upload process started
 
@@ -462,12 +472,18 @@ async def uploadToAdobe():
 
     # TODO - add notifications for dividing files into folders
     
-    folderList = Util.divide_files_into_folders()
+    if result["isOriginalsUpscaled"]:
+        folderList = Util.divide_files_into_folders(4, "Account", ORIGINALS_DIR)
+        filesCount = Util.count_files_in_folder(ORIGINALS_DIR)
+    else:
+        folderList = Util.divide_files_into_folders(4, "Account", UPSCALED_DIR)
+        filesCount = Util.count_files_in_folder(UPSCALED_DIR)
 
     # TODO - add notifications for uploading files to sftp server
-
-    Util.upload_files_sftp(folderList) #change to the main,js file to add notifications properly 
-
+    Util.upload_files_sftp(folderList,filesCount) #change to the main,js file to add notifications properly 
+    
+    ORIGINALS_DIR = os.path.join(UPLOAD_DIR, "originals")
+    
     return {"message": f"Upload To Adobe ended successfully"}
 
 @app.post("/regenerate/{field}/{filename}")
@@ -558,7 +574,7 @@ async def isUpscaled():
 async def upscale_by(request: UpscalingRequest):          
     if not request.no_validation:
         if await isUpscaled():            
-            return {"message": "skipped upscaling - files are already upscaled by topaz photo AI !"}
+            return {"isOriginalsUpscaled":True,"message": "skipped upscaling - files are already upscaled by topaz photo AI !"}
     else:
         upscaling_by = 0
         if not request.upscale_factor:
@@ -568,7 +584,6 @@ async def upscale_by(request: UpscalingRequest):
 
         try:         
             await notify_clients({"status": "upscaling"})
-
             await asyncio.gather(*[
                 asyncio.create_task(Util.upscale_image(ORIGINALS_DIR, UPSCALED_DIR, upscaling_by))               
             ])
@@ -582,7 +597,57 @@ async def upscale_by(request: UpscalingRequest):
             })
 
         return {"message": "Upscaling of all images completed"}
-        
+
+@app.post("/check-data-with-ai")
+async def check_data_with_ai():
+    db = get_database()
+    images = await db.images.find({"status": "processed"}).to_list(1000)
+    
+    for image in images:
+        try:
+            prompt = f"""Given the title '{image['title']}', how well do the keywords '{image['keywords']}' describe the image? 
+            be a stringent quality assurance inspector. 
+            Response with one word only for the Answer: 'good', 'average' or 'bad' ,and a short reason for the score you gave.
+            Response format: {{"Answer": "good","Reason":"this is a short reason for my answer..."}}"""
+            
+            response = await client.generate(
+                model="llama3.1",
+                prompt=prompt,
+                stream=False
+            )
+
+            logger.debug(f"DataCheck response: {response['response']}")
+
+            data = Util.extract_json(response['response'])
+            if data and 'Answer' in data:
+                check_status = data['Answer']
+                check_reason = data['Reason']
+
+                if check_status in ['very good', 'very bad']:
+                    check_status = check_status.replace('very ','')
+                
+                if check_status not in ['good', 'average', 'bad']:
+                    check_status = 'average'
+                
+                await db.images.update_one(
+                    {"_id": image["_id"]},
+                    {"$set": {"checkStatus": check_status,"checkReason":check_reason}}
+                )
+                
+                await notify_clients({
+                    "filename": image["filename"],
+                    "checkStatus": check_status,
+                    "checkReason": check_reason
+                })
+            else:
+                raise ValueError("Failed to parse answer from response")
+            
+        except Exception as e:
+            logger.error(f"Error checking data for image {image['filename']}: {str(e)}")
+    
+    return {"message": "Data check completed"}
+
+
 if __name__ == "__main__":    
     response = client.generate(
         model="phi3",       

@@ -18,6 +18,16 @@ from datetime import datetime
 import socket
 import time
 import sys
+import logging
+
+logger = logging.getLogger(__name__)
+
+# Directories to store uploaded images
+UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "uploaded_images")
+UPSCALED_DIR = os.path.join(UPLOAD_DIR, "upscaled")
+ORIGINALS_DIR = os.path.join(UPLOAD_DIR, "originals")
+RESIZED_DIR = os.path.join(UPLOAD_DIR, "resized")
+THUMBNAIL_DIR = os.path.join(UPLOAD_DIR, "thumbnails")
 
 class Util:
     @staticmethod
@@ -213,7 +223,7 @@ class Util:
             print(e.stderr)
 
     @staticmethod
-    def divide_files_into_folders(num_folders=4, folder_prefix="Account", source_dir="C:/AllPythonProjects/OSTools/uploaded_images/originals"):
+    def divide_files_into_folders(num_folders=4, folder_prefix="Account", source_dir=ORIGINALS_DIR):
         # Load environment variables
         load_dotenv()
         
@@ -276,7 +286,7 @@ class Util:
             ssh.close()
 
     @staticmethod
-    def upload_files_sftp(folderList):
+    def upload_files_sftp(folderList,filesCount):
         load_dotenv()  # Ensure environment variables are loaded
         adobe_stock_accounts = Util.get_adobe_stock_accounts()
         account_priority = Util.get_account_priority()
@@ -289,7 +299,7 @@ class Util:
         # Create a timestamp for this upload session (Windows-compatible format)
         timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M")
         unique_timestamp = str(int(time.time()))  # Unix timestamp for uniqueness
-        upload_session_folder = f"uploaded-to-adobe-at-({timestamp})-({unique_timestamp})"
+        upload_session_folder = f"total-of-{filesCount}-images-uploaded-to-adobe-at-({timestamp})-({unique_timestamp})"
         upload_session_path = os.path.join(final_dir, upload_session_folder)
         
         try:
@@ -342,11 +352,11 @@ class Util:
                                 print(f"Failed to upload {local_file}: {str(e)}")
                                 upload_successful = False
                 
-                except paramiko.SSHException as ssh_ex:
-                    print(f"SSH error occurred for {account_name}: {str(ssh_ex)}")
-                    upload_successful = False
                 except paramiko.AuthenticationException:
                     print(f"Authentication failed for {account_name}. Please check your credentials.")
+                    upload_successful = False
+                except paramiko.SSHException as ssh_ex:
+                    print(f"SSH error occurred for {account_name}: {str(ssh_ex)}")
                     upload_successful = False
                 except socket.gaierror as sock_ex:
                     print(f"Network error occurred for {account_name}: {str(sock_ex)}")
@@ -451,3 +461,26 @@ class Util:
         except subprocess.CalledProcessError as error:
             print(f"Upscaling failed with error: {error}")
             print(error.stderr.decode("utf-8"))        
+    @staticmethod
+    def extract_json(text):
+        """Extract JSON from text, even if it's not properly formatted."""
+        try:
+            match = re.search(r'\{.*\}', text, re.DOTALL)
+            if match:
+                return json.loads(match.group())
+        except json.JSONDecodeError as e:
+            logger.error(f"JSON decode error: {str(e)}")
+        except Exception as e:
+            logger.error(f"Unexpected error in extract_json: {str(e)}")
+        return None
+    
+    @staticmethod
+    def count_files_in_folder(folder_path):
+        # Get the list of all files and directories in the specified folder
+        files_and_dirs = os.listdir(folder_path)
+        
+        # Filter out directories and keep only files
+        files = [f for f in files_and_dirs if os.path.isfile(os.path.join(folder_path, f))]
+        
+        # Return the number of files
+        return len(files)

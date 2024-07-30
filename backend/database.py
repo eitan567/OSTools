@@ -16,7 +16,7 @@ async def save_image_data(db, filename, title, keywords, category, type, image_d
     db_category = image_data.get("category", "")
     original_title = image_data.get("original_title", "")
     thumbnail = image_data.get("thumbnail") if image_data else None
-    original_title = image_data["original_title"]
+    # original_title = image_data["original_title"]
         
     logger.info(f"Saving data for {filename}: Type= {type}, Original Title={original_title}, Title={title}, Keywords={keywords}, Category={category}")
 
@@ -29,7 +29,9 @@ async def save_image_data(db, filename, title, keywords, category, type, image_d
                 {"$set": {                    
                     "title": title,                   
                     "status": (isProcessed and "processed") or "not processed",
-                    "thumbnail": thumbnail
+                    "thumbnail": thumbnail,
+                    "checkStatus": "not checked",
+                    "checkReason": "no reason yet"
                 }},
                 upsert=True
             )    
@@ -40,7 +42,9 @@ async def save_image_data(db, filename, title, keywords, category, type, image_d
                 {"$set": {                    
                     "category": category,
                     "status": (isProcessed and "processed") or "not processed",
-                    "thumbnail": thumbnail
+                    "thumbnail": thumbnail,
+                    "checkStatus": "not checked",
+                    "checkReason": "no reason yet"
                 }},
                 upsert=True
             )    
@@ -51,7 +55,9 @@ async def save_image_data(db, filename, title, keywords, category, type, image_d
                 {"$set": {                    
                     "keywords": keywords,                    
                     "status": (isProcessed and "processed") or "not processed",
-                    "thumbnail": thumbnail
+                    "thumbnail": thumbnail,
+                    "checkStatus": "not checked",
+                    "checkReason": "no reason yet"
                 }},
                 upsert=True
             )    
@@ -64,7 +70,9 @@ async def save_image_data(db, filename, title, keywords, category, type, image_d
                     "keywords": keywords,
                     "category": category,
                     "status": "processed",
-                    "thumbnail": thumbnail
+                    "thumbnail": thumbnail,
+                    "checkStatus": "not checked",
+                    "checkReason": "no reason yet"
                 }},
                 upsert=True
             )        

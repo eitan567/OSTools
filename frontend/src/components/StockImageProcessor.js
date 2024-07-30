@@ -25,6 +25,7 @@ function StockImageProcessor() {
   const [unprocessedRowsCount, setUnprocessedRowsCount] = useState(false);
   const [partiallyProcessedCount, setPartiallyProcessedCount] = useState(false);
   const [hasPartiallyProcessedRows, setHasPartiallyProcessedRows] = useState(false);
+  const [isCheckingData, setIsCheckingData] = useState(false);
 
   useEffect(() => {
     const unprocessedRowsCount = images.filter(img => img.status === 'not processed');
@@ -36,6 +37,8 @@ function StockImageProcessor() {
     setHasUnprocessedRows(unprocessedRowsCount.length>0);
     setHasPartiallyProcessedRows(partiallyProcessedCount.length>0);
   }, [images]);
+
+
 
   const updateImageStatus = useCallback((data) => {
     setImages(prevImages => prevImages.map(img => 
@@ -179,6 +182,25 @@ function StockImageProcessor() {
     }
   }, [fetchImages]);
 
+  const handleDataCheckWithAI = useCallback(async () => {
+    setIsCheckingData(true);
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/check-data-with-ai`, {
+        method: 'POST',
+      });
+      if (!response.ok) throw new Error('Failed to check data with AI');
+      const result = await response.json();
+      setSnackbarMessage(result.message);
+      setSnackbarOpen(true);
+      await fetchImages(); // Refresh images to get updated check status
+    } catch (error) {
+      console.error('Error checking data with AI:', error);
+      setSnackbarMessage('Failed to check data with AI');
+      setSnackbarOpen(true);
+    } finally {
+      setIsCheckingData(false);
+    }
+  }, [fetchImages]);
   
   const handleUpscalingImages = useCallback(async (upscale_factor,no_validation) => {
     try {
@@ -488,35 +510,47 @@ function StockImageProcessor() {
                   />
                 </Badge>                
               </FormGroup>              
-                             
-                <NCheckbox defaultSelected size="sm" className="w-full mr-5" style={{flex:'3',marginRight:"5px"}} ref={checkboxRef} >Force Upscale</NCheckbox>  
-                <Input
-                  className="w-28 flex-6 w-xs"
-                  color="default"
-                  variant="bordered"
-                  type="text"
-                  placeholder="UpScale By..."
-                  labelPlacement="outside"
-                  style={{flex:'6',width:"100px"}}
-                  width="50px"
-                  size="sm"
-                  ref={inputRef}
-                  startContent={
-                    <PhotoSizeSelectSmallIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                  }
-                />
-                <button onClick={()=>handleUpscalingImages(inputRef.current.value,checkboxRef.current.checked)} 
-                  disabled={!isConnected || isAllImagesUpscaled}
-                  className="sign-up"
-                  style={{
-                    backgroundColor: (!isConnected || isAllImagesUpscaled) ? '#ccc' : '#36415d',
-                    padding: '0.3rem 0.6rem',
-                    fontSize: '0.8rem',
-                    flex:'2'
-                  }}
-                >
-                  Upscale All
-                </button>             
+              <button 
+                onClick={handleDataCheckWithAI} 
+                disabled={!isConnected || !isAllImagesProcessed}
+                className="sign-up"
+                style={{
+                  backgroundColor: (!isConnected || !isAllImagesProcessed) ? '#ccc' : '#36415d',
+                  padding: '0.3rem 0.6rem',
+                  fontSize: '0.8rem',
+                  flex:'3'
+                }}
+              >
+                {isCheckingData ? 'Checking...' : 'Check Data With AI'}
+              </button>      
+              <NCheckbox defaultSelected size="sm" className="w-full mr-5" style={{flex:'3',marginRight:"5px"}} ref={checkboxRef} >Force Upscale</NCheckbox>  
+              <Input
+                className="w-28 flex-6 w-xs"
+                color="default"
+                variant="bordered"
+                type="text"
+                placeholder="UpScale By..."
+                labelPlacement="outside"
+                style={{flex:'6',width:"100px"}}
+                width="50px"
+                size="sm"
+                ref={inputRef}
+                startContent={
+                  <PhotoSizeSelectSmallIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                }
+              />
+              <button onClick={()=>handleUpscalingImages(inputRef.current.value,checkboxRef.current.checked)} 
+                disabled={!isConnected || isAllImagesUpscaled}
+                className="sign-up"
+                style={{
+                  backgroundColor: (!isConnected || isAllImagesUpscaled) ? '#ccc' : '#36415d',
+                  padding: '0.3rem 0.6rem',
+                  fontSize: '0.8rem',
+                  flex:'2'
+                }}
+              >
+                Upscale All
+              </button>
             </Box>
             <Paper style={{ width: '100%', maxWidth: '1400px', overflow: 'auto', border: '1px solid #e6e5e5',marginBottom:'10px' }}>
               <ImageTable 

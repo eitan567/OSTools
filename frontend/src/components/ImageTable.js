@@ -9,6 +9,9 @@ import ErrorIcon from '@mui/icons-material/Error';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import HelpIcon from '@mui/icons-material/Help';
 import TextFieldWithRegenerate from './TextFieldWithRegenerate';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import StarIcon from '@mui/icons-material/Star';
+import StarHalfIcon from '@mui/icons-material/StarHalf';
 import './Dialog.css';
 import './imageTable.css';
 import SimpleModal from './Dialog';
@@ -37,6 +40,19 @@ const StatusIcon = ({ status }) => {
     case 'not processed':
     default:
       return <Tooltip title="Not Processed"><HelpIcon color="disabled" style={{ fontSize: '1rem' }} /></Tooltip>;
+  }
+};
+
+const CheckStatusIcon = ({ checkStatus,checkReason }) => {
+  switch (checkStatus) {
+    case 'good':
+      return <Tooltip title="Good"><StarIcon style={{ color: 'green', fontSize: '1rem' }} /></Tooltip>;
+    case 'Average':
+      return <Tooltip title={checkReason}><StarHalfIcon style={{ color: 'orange', fontSize: '1rem' }} /></Tooltip>;
+    case 'bad':
+      return <Tooltip title={checkReason}><StarBorderIcon style={{ color: 'red', fontSize: '1rem' }} /></Tooltip>;
+    default:
+      return <Tooltip title="Not checked"><HelpIcon color="disabled" style={{ fontSize: '1rem' }} /></Tooltip>;
   }
 };
 
@@ -269,6 +285,7 @@ const ImageTable = ({ images, onRegenerateField, onSelectImage, onSelectAll, onP
     keywords: '260px',
     category: '140px',
     status: '45px',
+    checkStatus: '45px',
     actions: '55px',
   };
 
@@ -325,6 +342,15 @@ const ImageTable = ({ images, onRegenerateField, onSelectImage, onSelectAll, onP
                   onClick={() => handleRequestSort('status')}
                 >
                   Status
+                </TableSortLabel>
+              </TableCell>
+              <TableCell style={{ ...tableStyles.headerCell, width: columnWidths.checkStatus }}>
+                <TableSortLabel
+                  active={orderBy === 'checkStatus'}
+                  direction={orderBy === 'checkStatus' ? order : 'asc'}
+                  onClick={() => handleRequestSort('checkStatus')}
+                >
+                  Check
                 </TableSortLabel>
               </TableCell>
               <TableCell style={{ ...tableStyles.headerCell, width: columnWidths.actions }}>Actions</TableCell>
@@ -390,6 +416,9 @@ const ImageTable = ({ images, onRegenerateField, onSelectImage, onSelectAll, onP
                 <TableCell style={{ ...tableStyles.cell, textAlign: 'center' }}>
                   <StatusIcon status={image.status} />
                 </TableCell>
+                <TableCell style={{ ...tableStyles.cell, textAlign: 'center' }}>
+                  <CheckStatusIcon checkStatus={image.checkStatus} checkReason={image.checkReason}/>
+                </TableCell>
                 <TableCell style={tableStyles.cell}>
                   <button
                     onClick={() => onProcessImage(image.filename)}
@@ -409,7 +438,7 @@ const ImageTable = ({ images, onRegenerateField, onSelectImage, onSelectAll, onP
               </TableRow>
             ))}
             <TableRow style={tableStyles.summaryRow}>
-              <TableCell colSpan={8} align="right" style={{ fontSize: '0.75rem' }}>
+              <TableCell colSpan={9} align="right" style={{ fontSize: '0.75rem' }}>
                 Total Rows: {totalRows} | Processed Rows: {totalProcessedRows}
               </TableCell>
             </TableRow>
