@@ -1,14 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import LandingPage from './components/LandingPage';
-import StockImageProcessor from './components/StockImageProcessor';
-import ScrollToTop from './components/ScrollToTop';
-import WaveTool from './components/WaveTool';
-import SignInPage from './components/SignIn';
-import SignUpPage from './components/SignUp';
-import ScrollToHome from './components/scrollToHome';
-import SpriteAnimationTool from './components/sprite-animation-tool';
+import LandingPage from './pages/LandingPage';
+import StockImageProcessor from './pages/StockImageProcessor';
+import ScrollToTop from './components/common/ScrollToTop';
+import WaveTool from './pages/WaveTool';
+import SignInPage from './pages/SignIn';
+import SignUpPage from './pages/SignUp';
+import ScrollToHome from './components/common/scrollToHome';
+import SpriteAnimationTool from './pages/sprite-animation-tool';
 import { NextUIProvider } from '@nextui-org/react';
+import './App.css'
 
 function App() {
   return (
