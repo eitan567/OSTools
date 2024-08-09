@@ -11,3 +11,6 @@ frontend/.env.local
 .env
 backend/onlinesellertools-firebase-adminsdk-1ftew-d70e2eac48.json
 app.log
+app.log
+backend/.env
+frontend/.env
