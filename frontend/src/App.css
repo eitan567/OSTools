@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+
+html{
+  height: 100vh;
+}
+
 .App {
   text-align: center;
 }
@@ -15,6 +20,10 @@
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
+}
+
+main{
+  padding-top: 7rem;
 }
 
 button {

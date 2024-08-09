@@ -65,7 +65,7 @@
     content: '';
     position: absolute;
     top: 50%;
-    width: 45%;
+    width: 22%;
     height: 1px;
     background-color: #ced4da;
   }
@@ -123,3 +123,30 @@
     background-color: #3151d3;
   }
   
+
+  .sign-up-form{
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 3rem;
+  }
+
+  .sign-up-buttons{
+    padding-top: 1.4rem;
+    flex:1;
+  }
+
+  .sign-up-form-group{
+    flex:1;
+  }
+
+  .sign-up-title{
+    padding-bottom: 3rem;    
+  }
+
+  .sign-up-title h2{
+    font-weight: bolder;
+    font-size: 2.5rem;
+    color: #1D2144;
+  }

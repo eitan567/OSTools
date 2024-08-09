@@ -4,15 +4,38 @@ button:disabled {
     border-color: light-dark(rgb(128 128 128), rgba(195, 195, 195, 0.3)) !important;
 }
 
-.processorTitle {
-    padding: 1.6rem 1rem 0rem;
-    margin: 5rem 0rem 0rem;
-    height: 5rem;
+main.processor-main-content{
+    padding-top: 0rem;
 }
 
-.processorTitle h1 {
-    margin-top: 0rem;
+/* .processorTable {
+    padding: 1rem 1rem;
+  } */
+  
+  .processorTitle {
+    /* padding: 8rem 1rem 0rem; */
+  }
+  
+  .processorTitle h1 {
+    margin-top: 1rem;
+    font-size: 2rem;
+    margin-bottom: 0rem;
+  }
+
+.processorTitle {
+    padding: 5rem 0rem 0rem;
+    /* margin: 5rem 0rem 0rem; */
+    /* height: 5rem; */
+    text-align: center;
+    margin: 0rem 0rem 0rem;
+    background-color: transparent;
+    position: relative;
+    overflow: hidden;
 }
+
+/* .processorTitle h1 {
+    margin-top: 0rem;
+} */
 
 .processorTable {
     padding-top: 0.5rem;
@@ -31,3 +54,12 @@ button:disabled {
 label .MuiTypography-root {
     font-size:0.8rem !important;
 }
+
+/* 
+.hero {
+    text-align: center;
+    margin: 0rem 0rem 0rem;
+    background-color: transparent;
+    position: relative;
+    overflow: hidden;
+} */

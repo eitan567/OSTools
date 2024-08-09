@@ -4,10 +4,10 @@ import PhotoSizeSelectSmallIcon from '@mui/icons-material/PhotoSizeSelectSmall';
 import {Badge,Input,Checkbox as NCheckbox} from "@nextui-org/react";
 import ImageTable from '../ImageTable';
 import Header from '../../components/layout/Header';
-import '../LandingPage/LandingPage.css';
+// import '../LandingPage/LandingPage.css';
 import './StockImageProcessor.css';
 
-function StockImageProcessor() {
+const StockImageProcessor=({user,setUser})=> {
   const [images, setImages] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -97,6 +97,7 @@ function StockImageProcessor() {
 
     eventSource.onmessage = (event) => {
       try {
+        console.log("eventSource.onmessage");
         const data = JSON.parse(event.data);
         if (data.type === 'keep-alive') return;
         updateImageStatus(data);
@@ -478,14 +479,14 @@ function StockImageProcessor() {
   const inputRef = useRef(null);
   return (
     <div key={componentKey} className="landing-page">
-      <Header />
-      <main>
-        <section className="hero processorTitle">
+      <Header user={user} setUser={setUser}/>
+      <main className='processor-main-content'>
+        <section className="processorTitle">
           <h1>Stock Image Processor</h1>
           <p>Process and manage your stock images with AI-powered tools.</p>
         </section>
   
-        <section className="pricing processorTable" style={{ backgroundColor: '#fff' }}>
+        <section className="processorTable" style={{ backgroundColor: '#fff' }}>
           <Box display="flex" flexDirection="column" alignItems="center">
             <Box display="flex" justifyContent="space-between" width="100%" maxWidth="1400px" marginBottom="0rem" alignItems="center">
               <FormGroup row style={{height:'38px',flex: "16"}} width="100%">

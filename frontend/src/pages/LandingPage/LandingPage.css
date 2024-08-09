@@ -19,7 +19,7 @@ body {
 
 .hero {
   text-align: center;
-  margin: 4.5rem 0rem 4rem;
+  margin: 0rem 0rem 4rem;
   background-color: transparent;
   position: relative;
   overflow: hidden;
@@ -235,20 +235,6 @@ input:checked + .slider {
 
 input:checked + .slider:before {
   transform: translateX(26px);
-}
-
-.processorTable {
-  padding: 1rem 1rem;
-}
-
-.processorTitle {
-  padding: 8rem 1rem 0rem;
-}
-
-.processorTitle h1 {
-  margin-top: 1rem;
-  font-size: 2rem;
-  margin-bottom: 0rem;
 }
 
 /* Responsive design */
@@ -481,14 +467,18 @@ input:checked + .slider:before {
 
 .popup-content {
   background-color: white;
-  padding: 2rem;
-  border-radius: 8px;
+  padding: 0.2rem;
+  border-radius: 14px;
   width: 90%;
-  max-width: 400px;
+  max-width: 800px;
+  border: 7px solid #4a6cf7;
 }
 
 .sign-in-container,
 .sign-up-container {
   text-align: center;
+  border: 1px solid #007bff;
+  border-radius: 5px;
+  padding: 22px;
 }
 

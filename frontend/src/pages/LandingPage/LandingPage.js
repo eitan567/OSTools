@@ -1,31 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './LandingPage.css';
 import Header from '../../components/layout/Header';
-import MainFeatures from '../MainFeatures';
-import PricingSection from '../PricingSection';
+import MainFeatures from './components/MainFeatures';
+import PricingSection from './components/PricingSection';
 import Footer from '../../components/layout/Footer';
-import ReadyToHelp from '../ReadyToHelp';
-import ProductShowcase from '../ProductShowcase';
-import UserTestimonials from '../UserTestimonials';
-import LatestBlogs from '../LatestBlogs';
-import TicketForm from '../TicketForm';
-import SignIn from '../SignIn';
-import SignUp from '../SignUp';
+import ReadyToHelp from './components/ReadyToHelp';
+import ProductShowcase from './components/ProductShowcase';
+import UserTestimonials from './components/UserTestimonials';
+import LatestBlogs from './components/LatestBlogs';
+import TicketForm from './components/TicketForm';
+// import SignIn from '../SignIn';
+// import SignUp from '../SignUp';
 
-const LandingPage = () => {
-  const [showSignIn, setShowSignIn] = useState(false);
-  const [showSignUp, setShowSignUp] = useState(false);
+const LandingPage = ({user,setUser}) => {
+  // const [showSignIn, setShowSignIn] = useState(false);
+  // const [showSignUp, setShowSignUp] = useState(false);
 
-  const handleSignInClick = () => setShowSignIn(true);
-  const handleSignUpClick = () => setShowSignUp(true);
-  const closePopup = () => {
-    setShowSignIn(false);
-    setShowSignUp(false);
-  };
+  // const handleSignInClick = () => setShowSignIn(true);
+  // const handleSignUpClick = () => setShowSignUp(true);
+  // const closePopup = () => {
+  //   setShowSignIn(false);
+  //   setShowSignUp(false);
+  // };
 
   return (
     <div className="landing-page"> 
-      <Header onSignInClick={handleSignInClick} onSignUpClick={handleSignUpClick} />
+      <Header user={user} setUser={setUser}/>
       <main>
       <div className="box">
         <div className="wave -one" />
@@ -132,7 +132,7 @@ const LandingPage = () => {
         <Footer />
       </main>
 
-      {showSignIn && (
+      {/* {showSignIn && (
         <div className="popup-background" onClick={closePopup}>
           <div className="popup-content" onClick={e => e.stopPropagation()}>
             <SignIn />
@@ -146,7 +146,7 @@ const LandingPage = () => {
             <SignUp />
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

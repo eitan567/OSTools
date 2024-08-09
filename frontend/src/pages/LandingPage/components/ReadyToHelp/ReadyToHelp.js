@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import ReactPlayer from 'react-player';
 import './ReadyToHelp.css';
-import ReadyToHelpImg from '../../assets/images/readyToHelp.png';
-import FormboldSVG from '../../assets/images/formbold.svg';
+import ReadyToHelpImg from '../../../../assets/images/readyToHelp.png';
+import FormboldSVG from '../../../../assets/images/formbold.svg';
 
 const ReadyToHelp = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -12,7 +12,7 @@ const ReadyToHelp = () => {
   };
 
   return (
-    <section className="ready-to-help">
+    <section id="ready-to-help" className="ready-to-help">
       <div className="ready-to-help-content">
         <h2>We are ready to help</h2>
         <p>There are many variations of passages of Lorem Ipsum available but the majority have suffered alteration in some form.</p>

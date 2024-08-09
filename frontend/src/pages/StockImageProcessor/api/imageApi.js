@@ -132,6 +132,7 @@ export const checkDataWithAI = async () => {
   
     eventSource.onmessage = (event) => {
       try {
+        console.log("eventSource.onmessage 2");
         const data = JSON.parse(event.data);
         if (data.type === 'keep-alive') return;
         updateImageStatus(data, setImages);

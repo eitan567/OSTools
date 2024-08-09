@@ -3,15 +3,19 @@ import os
 import shutil
 import asyncio
 import json
-from fastapi import FastAPI, UploadFile, File, HTTPException, Request
+from fastapi import FastAPI,APIRouter, UploadFile, File, HTTPException,Depends,Response, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse
+from starlette.responses import JSONResponse
+from dependencies import oauth
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
 from pydantic import BaseModel
 from typing import List
 import csv
 from fastapi.responses import FileResponse, Response
+from starlette.middleware.sessions import SessionMiddleware
 from sse_starlette.sse import EventSourceResponse, ServerSentEvent
 from util import Util
 from image_processor import process_image, get_image_title
@@ -24,10 +28,15 @@ from logging.handlers import RotatingFileHandler
 from openai import AsyncOpenAI
 from ollama import AsyncClient
 from dotenv import load_dotenv
+from starlette.config import Config
 import subprocess
+import auth
 
-load_dotenv()
+# Explicitly load the .env file
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+load_dotenv(dotenv_path)
 
+# logging
 # Set up a rotating file handler
 file_handler = RotatingFileHandler('app.log', maxBytes=5000000, backupCount=5)
 
@@ -43,17 +52,29 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
  
 app = FastAPI()
-
 client = AsyncClient()
 
-# Add CORS middleware
+# middleware
+origins = [
+    "http://localhost:3000",  # Your React app's URL
+]
+
+app.add_middleware(SessionMiddleware, secret_key="123456789")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # React app's address
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.middleware("http")
+async def add_headers(request, call_next):
+    response = await call_next(request)
+    response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
+    response.headers["Cross-Origin-Embedder-Policy"] = "require-corp"
+    return response
 
 # Directories to store uploaded images
 UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "uploaded_images")
@@ -647,9 +668,10 @@ async def check_data_with_ai():
     
     return {"message": "Data check completed"}
 
+app.include_router(auth.router)
 
 if __name__ == "__main__":    
     response = client.generate(
         model="phi3",       
     )
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=5000)

@@ -1,7 +1,7 @@
 import React from 'react';
 import './LatestBlogs.css';
-import Man from '../../assets/images/man.png';
-import LatestBlogsImg from '../../assets/images/latestBlogsImg.png';
+import Man from '../../../../assets/images/man.png';
+import LatestBlogsImg from '../../../../assets/images/latestBlogsImg.png';
 
 
 const blogPosts = [
@@ -48,7 +48,7 @@ const blogPosts = [
 
 const LatestBlogs = () => {
   return (
-    <section className="latest-blogs">
+    <section id="latest-blogs" className="latest-blogs">
       <div className="blogs-content">
         <h2>Our Latest Blogs</h2>
         <p className='headerText'>There are many variations of passages of Lorem Ipsum available but the majority have suffered alteration in some form.</p>

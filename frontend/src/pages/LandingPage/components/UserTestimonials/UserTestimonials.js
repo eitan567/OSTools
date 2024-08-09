@@ -1,6 +1,6 @@
 import React from 'react';
 import './UserTestimonials.css';
-import Man from '../../assets/images/man.png';
+import Man from '../../../../assets/images/man.png';
 
 const testimonials = [
   {
