@@ -5,3 +5,7 @@ app.log
 app.log
 app.log
 backend/__pycache__/
+backend/.env
+frontend/.env
+frontend/.env.local
+.env
