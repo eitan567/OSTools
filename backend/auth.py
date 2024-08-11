@@ -55,7 +55,7 @@ async def firebase_login(request: Request):
             'uid': uid,
             'email': user.email or decoded_token.get('email'),
             'name': user.display_name or decoded_token.get('name'),
-            'picture': user.photo_url or decoded_token.get('picture')
+            'picture': data.get('photoURL') or user.photo_url or decoded_token.get('picture')
         }
         
         # If email is still not available, try to get it from provider data

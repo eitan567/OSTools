@@ -1,3 +1,4 @@
+import safeJSONParse from '../../../App.js'
 const API_URL = process.env.REACT_APP_API_URL;
 
 export const fetchImages = async () => {
@@ -133,7 +134,7 @@ export const checkDataWithAI = async () => {
     eventSource.onmessage = (event) => {
       try {
         console.log("eventSource.onmessage 2");
-        const data = JSON.parse(event.data);
+        const data = safeJSONParse(event.data);
         if (data.type === 'keep-alive') return;
         updateImageStatus(data, setImages);
       } catch (error) {

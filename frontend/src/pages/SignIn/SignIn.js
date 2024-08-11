@@ -25,6 +25,23 @@ const SignIn = ({ onLoginSuccess }) => {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
+      let photoURL = user.photoURL;
+  
+      // If photoURL is not available, fetch it based on the provider
+      if (!photoURL) {
+        if (provider instanceof FacebookAuthProvider) {
+          const token = await user.getIdToken();
+          const response = await fetch(`https://graph.facebook.com/${user.providerData[0].uid}/picture?type=large&access_token=${token}`);
+          photoURL = response.url;
+        } else if (provider instanceof OAuthProvider && provider.providerId === 'microsoft.com') {
+          // For Microsoft, we might need to use a different approach
+          // This is a placeholder and might need adjustment
+          const token = await user.getIdToken();
+          photoURL = `https://graph.microsoft.com/v1.0/me/photo/$value`;
+          // You might need to include this token in your request to the backend
+        }
+      }
+  
       let idToken = await user.getIdToken();
       await fetch("http://localhost:5000/auth/firebase-login", {
         method: "POST",
@@ -35,11 +52,12 @@ const SignIn = ({ onLoginSuccess }) => {
           uid: user.uid,
           email: user.email,
           displayName: user.displayName,
-          photoURL: user.photoURL,
-          idToken:idToken
+          photoURL: photoURL,
+          idToken: idToken
         }),
         credentials: "include",
       });
+  
       if (onLoginSuccess) onLoginSuccess();
       navigate('/');
     } catch (error) {

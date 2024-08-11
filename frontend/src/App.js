@@ -23,6 +23,25 @@ console.error = (...args) => {
   originalError.apply(console, args);
 };
 
+export function safeJSONParse(str) {
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    console.warn("Failed to parse JSON:", str);
+    return null;
+  }
+}
+
+window.addEventListener('storage', function(e) {
+  console.log('Storage changed:', e.key, e.newValue);
+  try {
+    const parsed = JSON.parse(e.newValue);
+    console.log('Parsed value:', parsed);
+  } catch (error) {
+    console.error('Failed to parse storage value:', error);
+  }
+});
+
 function App() {
   const [user, setUser] = useState(null);
   const [showSignIn, setShowSignIn] = useState(false);
@@ -128,6 +147,25 @@ function App() {
     }, [navigate]);
     return null;
   };
+
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key && e.newValue) {
+        try {
+          const parsedValue = JSON.parse(e.newValue);
+          console.log(`Storage updated for key "${e.key}":`, parsedValue);
+        } catch (error) {
+          console.warn(`Failed to parse storage value for key "${e.key}":`, error);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
   return (
     <NextUIProvider>

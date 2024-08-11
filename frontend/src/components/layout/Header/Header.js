@@ -60,7 +60,7 @@ const Header = ({ user, setUser }) => {
           <ul className="list logout-list">
             <li className="listItem user-display">
               <img
-                src={user.picture ? user.picture : UserPic}
+                src={user.picture || UserPic}
                 alt=""
                 className="avatar"
               />

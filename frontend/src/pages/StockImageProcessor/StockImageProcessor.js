@@ -6,6 +6,7 @@ import ImageTable from '../ImageTable';
 import Header from '../../components/layout/Header';
 // import '../LandingPage/LandingPage.css';
 import './StockImageProcessor.css';
+import safeJSONParse from '../../App.js'
 
 const StockImageProcessor=({user,setUser})=> {
   const [images, setImages] = useState([]);
@@ -98,7 +99,7 @@ const StockImageProcessor=({user,setUser})=> {
     eventSource.onmessage = (event) => {
       try {
         console.log("eventSource.onmessage");
-        const data = JSON.parse(event.data);
+        const data = safeJSONParse(event.data);
         if (data.type === 'keep-alive') return;
         updateImageStatus(data);
       } catch (error) {
