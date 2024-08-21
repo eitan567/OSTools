@@ -6,7 +6,6 @@ import ImageTable from '../ImageTable';
 import Header from '../../components/layout/Header';
 // import '../LandingPage/LandingPage.css';
 import './StockImageProcessor.css';
-import safeJSONParse from '../../App.js'
 
 const StockImageProcessor=({user,setUser})=> {
   const [images, setImages] = useState([]);
@@ -38,8 +37,6 @@ const StockImageProcessor=({user,setUser})=> {
     setHasUnprocessedRows(unprocessedRowsCount.length>0);
     setHasPartiallyProcessedRows(partiallyProcessedCount.length>0);
   }, [images]);
-
-
 
   const updateImageStatus = useCallback((data) => {
     setImages(prevImages => prevImages.map(img => 
@@ -99,9 +96,9 @@ const StockImageProcessor=({user,setUser})=> {
     eventSource.onmessage = (event) => {
       try {
         console.log("eventSource.onmessage");
-        const data = safeJSONParse(event.data);
-        if (data.type === 'keep-alive') return;
-        updateImageStatus(data);
+        // const data = safeJSONParse(event.data);
+        if (event.data.type === 'keep-alive') return;
+        updateImageStatus(event.data);
       } catch (error) {
         console.error('Error parsing SSE data:', error, event.data);
       }

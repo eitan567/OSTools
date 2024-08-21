@@ -1,4 +1,4 @@
-import safeJSONParse from '../../../App.js'
+// import safeJSONParse from '../../../App.js'
 const API_URL = process.env.REACT_APP_API_URL;
 
 export const fetchImages = async () => {
@@ -133,10 +133,9 @@ export const checkDataWithAI = async () => {
   
     eventSource.onmessage = (event) => {
       try {
-        console.log("eventSource.onmessage 2");
-        const data = safeJSONParse(event.data);
-        if (data.type === 'keep-alive') return;
-        updateImageStatus(data, setImages);
+        console.log("eventSource.onmessage 2");        
+        if (event.data.type === 'keep-alive') return;
+        updateImageStatus(event.data, setImages);
       } catch (error) {
         console.error('Error parsing SSE data:', error, event.data);
       }
